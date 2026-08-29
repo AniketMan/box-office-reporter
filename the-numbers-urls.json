@@ -1,0 +1,614 @@
+{
+  "Pixar": [
+    {
+      "title": "Toy Story",
+      "url": "https://www.the-numbers.com/movie/Toy-Story"
+    },
+    {
+      "title": "A Bug’s Life",
+      "url": "https://www.the-numbers.com/movie/Bugs-Life-A"
+    },
+    {
+      "title": "Toy Story 2",
+      "url": "https://www.the-numbers.com/movie/Toy-Story-2"
+    },
+    {
+      "title": "Monsters, Inc.",
+      "url": "https://www.the-numbers.com/movie/Monsters-Inc"
+    },
+    {
+      "title": "Finding Nemo",
+      "url": "https://www.the-numbers.com/movie/Finding-Nemo"
+    },
+    {
+      "title": "The Incredibles",
+      "url": "https://www.the-numbers.com/movie/Incredibles-The"
+    },
+    {
+      "title": "Cars",
+      "url": "https://www.the-numbers.com/movie/Cars"
+    },
+    {
+      "title": "Ratatouille",
+      "url": "https://www.the-numbers.com/movie/Ratatouille"
+    },
+    {
+      "title": "WALL-E",
+      "url": "https://www.the-numbers.com/movie/WALL-E"
+    },
+    {
+      "title": "Up",
+      "url": "https://www.the-numbers.com/movie/Up-(2009)"
+    },
+    {
+      "title": "Toy Story 3",
+      "url": "https://www.the-numbers.com/movie/Toy-Story-3"
+    },
+    {
+      "title": "Cars 2",
+      "url": "https://www.the-numbers.com/movie/Cars-2"
+    },
+    {
+      "title": "Brave",
+      "url": "https://www.the-numbers.com/movie/Brave"
+    },
+    {
+      "title": "Monsters University",
+      "url": "https://www.the-numbers.com/movie/Monsters-University"
+    },
+    {
+      "title": "Inside Out",
+      "url": "https://www.the-numbers.com/movie/Inside-Out-(2015)"
+    },
+    {
+      "title": "The Good Dinosaur",
+      "url": "https://www.the-numbers.com/movie/Good-Dinosaur-The"
+    },
+    {
+      "title": "Finding Dory",
+      "url": "https://www.the-numbers.com/movie/Finding-Dory"
+    },
+    {
+      "title": "Cars 3",
+      "url": "https://www.the-numbers.com/movie/Cars-3"
+    },
+    {
+      "title": "Coco",
+      "url": "https://www.the-numbers.com/movie/Coco-(2017)"
+    },
+    {
+      "title": "Incredibles 2",
+      "url": "https://www.the-numbers.com/movie/Incredibles-2"
+    },
+    {
+      "title": "Toy Story 4",
+      "url": "https://www.the-numbers.com/movie/Toy-Story-4-(2019)"
+    },
+    {
+      "title": "Onward",
+      "url": "https://www.the-numbers.com/movie/onward-(2020)"
+    },
+    {
+      "title": "Soul",
+      "url": "https://www.the-numbers.com/movie/Soul-(2020)"
+    },
+    {
+      "title": "Luca",
+      "url": "https://www.the-numbers.com/movie/Luca-(2021)"
+    },
+    {
+      "title": "Turning Red",
+      "url": "https://www.the-numbers.com/movie/Turning-Red-(2022)"
+    },
+    {
+      "title": "Lightyear",
+      "url": "https://www.the-numbers.com/movie/Lightyear-(2022)"
+    },
+    {
+      "title": "Elemental",
+      "url": "https://www.the-numbers.com/movie/Elemental-(2023)"
+    },
+    {
+      "title": "Inside Out 2",
+      "url": "https://www.the-numbers.com/movie/Inside-Out-2-(2024)"
+    }
+  ],
+  "MCU": [
+    {
+      "title": "Iron Man",
+      "url": "https://www.the-numbers.com/movie/Iron-Man"
+    },
+    {
+      "title": "The Incredible Hulk",
+      "url": "https://www.the-numbers.com/movie/Incredible-Hulk-The"
+    },
+    {
+      "title": "Iron Man 2",
+      "url": "https://www.the-numbers.com/movie/Iron-Man-2"
+    },
+    {
+      "title": "Thor",
+      "url": "https://www.the-numbers.com/movie/Thor"
+    },
+    {
+      "title": "Captain America: The First Avenger",
+      "url": "https://www.the-numbers.com/movie/Captain-America-The-First-Avenger"
+    },
+    {
+      "title": "The Avengers",
+      "url": "https://www.the-numbers.com/movie/Avengers-The-(2012)"
+    },
+    {
+      "title": "Iron Man 3",
+      "url": "https://www.the-numbers.com/movie/Iron-Man-3"
+    },
+    {
+      "title": "Thor: The Dark World",
+      "url": "https://www.the-numbers.com/movie/Thor-The-Dark-World"
+    },
+    {
+      "title": "Captain America: The Winter Soldier",
+      "url": "https://www.the-numbers.com/movie/Captain-America-The-Winter-Soldier"
+    },
+    {
+      "title": "Guardians of the Galaxy",
+      "url": "https://www.the-numbers.com/movie/Guardians-of-the-Galaxy"
+    },
+    {
+      "title": "Avengers: Age of Ultron",
+      "url": "https://www.the-numbers.com/movie/Avengers-Age-of-Ultron"
+    },
+    {
+      "title": "Ant-Man",
+      "url": "https://www.the-numbers.com/movie/Ant-Man"
+    },
+    {
+      "title": "Captain America: Civil War",
+      "url": "https://www.the-numbers.com/movie/Captain-America-Civil-War"
+    },
+    {
+      "title": "Doctor Strange",
+      "url": "https://www.the-numbers.com/movie/Doctor-Strange-(2016)"
+    },
+    {
+      "title": "Guardians of the Galaxy Vol 2",
+      "url": "https://www.the-numbers.com/movie/Guardians-of-the-Galaxy-Vol-2"
+    },
+    {
+      "title": "Spider-Man: Homecoming",
+      "url": "https://www.the-numbers.com/movie/Spider-Man-Homecoming"
+    },
+    {
+      "title": "Thor: Ragnarok",
+      "url": "https://www.the-numbers.com/movie/Thor-Ragnarok"
+    },
+    {
+      "title": "Black Panther",
+      "url": "https://www.the-numbers.com/movie/Black-Panther-(2018)"
+    },
+    {
+      "title": "Avengers: Infinity War",
+      "url": "https://www.the-numbers.com/movie/Avengers-Infinity-War-(2017)"
+    },
+    {
+      "title": "Ant-Man and the Wasp",
+      "url": "https://www.the-numbers.com/movie/Ant-Man-and-the-Wasp-(2018)"
+    },
+    {
+      "title": "Captain Marvel",
+      "url": "https://www.the-numbers.com/movie/Captain-Marvel-(2019)"
+    },
+    {
+      "title": "Avengers: Endgame",
+      "url": "https://www.the-numbers.com/movie/Avengers-Endgame-(2019)"
+    },
+    {
+      "title": "Spider-Man: Far From Home",
+      "url": "https://www.the-numbers.com/movie/Spider-Man-Far-From-Home-(2019)"
+    },
+    {
+      "title": "Black Widow",
+      "url": "https://www.the-numbers.com/movie/Black-Widow-(2021)"
+    },
+    {
+      "title": "Shang-Chi and the Legend of the Ten Rings",
+      "url": "https://www.the-numbers.com/movie/Shang-Chi-and-the-Legend-of-the-Ten-Rings-(2021)"
+    },
+    {
+      "title": "Eternals",
+      "url": "https://www.the-numbers.com/movie/Eternals-(2021)"
+    },
+    {
+      "title": "Spider-Man: No Way Home",
+      "url": "https://www.the-numbers.com/movie/Spider-Man-No-Way-Home-(2021)"
+    },
+    {
+      "title": "Doctor Strange in the Multverse of Madness",
+      "url": "https://www.the-numbers.com/movie/Doctor-Strange-in-the-Multiverse-of-Madness-(2022)"
+    },
+    {
+      "title": "Thor: Love and Thunder",
+      "url": "https://www.the-numbers.com/movie/Thor-Love-and-Thunder-(2022)"
+    },
+    {
+      "title": "Black Panther: Wakanda Forever",
+      "url": "https://www.the-numbers.com/movie/Black-Panther-Wakanda-Forever-(2022)"
+    },
+    {
+      "title": "Ant-Man and the Wasp: Quantumania",
+      "url": "https://www.the-numbers.com/movie/Ant-Man-and-the-Wasp-Quantumania-(2023)"
+    },
+    {
+      "title": "Guardians of the Galaxy Vol 3",
+      "url": "https://www.the-numbers.com/movie/Guardians-of-the-Galaxy-Vol-3-(2023)"
+    },
+    {
+      "title": "The Marvels",
+      "url": "https://www.the-numbers.com/movie/Marvels-The-(2023)"
+    },
+    {
+      "title": "Deadpool & Wolverine",
+      "url": "https://www.the-numbers.com/movie/Deadpool-and-Wolverine-(2024)"
+    },
+    {
+      "title": "Captain America: Brave New World",
+      "url": "https://www.the-numbers.com/movie/Captain-America-Brave-New-World-(2025)"
+    },
+    {
+      "title": "Thunderbolts",
+      "url": "https://www.the-numbers.com/movie/Thunderbolts-(2025)"
+    },
+    {
+      "title": "Fantastic Four",
+      "url": "https://www.the-numbers.com/movie/Fantastic-Four-The-First-Steps-(2025)"
+    },
+    {
+      "title": "Spiderman: Brand New Day",
+      "url": "https://www.the-numbers.com/movie/Spider-Man-Brand-New-Day-(2026)"
+    }
+  ],
+  "Star Wars": [
+    {
+      "title": "Star Wars Ep. IV: A New Hope",
+      "url": "https://www.the-numbers.com/movie/Star-Wars-Ep-IV-A-New-Hope-(1977)"
+    },
+    {
+      "title": "Star Wars Ep. V: The Empire…",
+      "url": "https://www.the-numbers.com/movie/Star-Wars-Ep-V-The-Empire-Strikes-Back"
+    },
+    {
+      "title": "Star Wars Ep. VI: Return of…",
+      "url": "https://www.the-numbers.com/movie/Star-Wars-Ep-VI-Return-of-the-Jedi"
+    },
+    {
+      "title": "Star Wars Ep. I: The Phanto…",
+      "url": "https://www.the-numbers.com/movie/Star-Wars-Ep-I-The-Phantom-Menace"
+    },
+    {
+      "title": "Star Wars Ep. II: Attack of…",
+      "url": "https://www.the-numbers.com/movie/Star-Wars-Ep-II-Attack-of-the-Clones"
+    },
+    {
+      "title": "Star Wars Ep. III: Revenge …",
+      "url": "https://www.the-numbers.com/movie/Star-Wars-Ep-III-Revenge-of-the-Sith"
+    },
+    {
+      "title": "Star Wars Ep. VII: The Forc…",
+      "url": "https://www.the-numbers.com/movie/Star-Wars-Ep-VII-The-Force-Awakens"
+    },
+    {
+      "title": "Rogue One: A Star Wars Story",
+      "url": "https://www.the-numbers.com/movie/Rogue-One-A-Star-Wars-Story"
+    },
+    {
+      "title": "Star Wars Ep. VIII: The Las…",
+      "url": "https://www.the-numbers.com/movie/Star-Wars-Ep-VIII-The-Last-Jedi"
+    },
+    {
+      "title": "Solo: A Star Wars Story",
+      "url": "https://www.the-numbers.com/movie/Solo-A-Star-Wars-Story"
+    },
+    {
+      "title": "Star Wars: The Rise of Skyw…",
+      "url": "https://www.the-numbers.com/movie/Star-Wars-The-Rise-of-Skywalker-(2019)"
+    }
+  ],
+  "DC": [
+    {
+      "title": "Superman",
+      "url": "https://www.the-numbers.com/movie/Superman"
+    },
+    {
+      "title": "Superman II",
+      "url": "https://www.the-numbers.com/movie/Superman-II"
+    },
+    {
+      "title": "Superman III",
+      "url": "https://www.the-numbers.com/movie/Superman-III-(1983)"
+    },
+    {
+      "title": "Superman IV: The Quest for …",
+      "url": "https://www.the-numbers.com/movie/Superman-IV-The-Quest-for-Peace"
+    },
+    {
+      "title": "Batman",
+      "url": "https://www.the-numbers.com/movie/Batman"
+    },
+    {
+      "title": "Batman Returns",
+      "url": "https://www.the-numbers.com/movie/Batman-Returns"
+    },
+    {
+      "title": "Batman Forever",
+      "url": "https://www.the-numbers.com/movie/Batman-Forever-(1995)"
+    },
+    {
+      "title": "Batman & Robin",
+      "url": "https://www.the-numbers.com/movie/Batman-and-Robin"
+    },
+    {
+      "title": "Road to Perdition",
+      "url": "https://www.the-numbers.com/movie/Road-to-Perdition"
+    },
+    {
+      "title": "The League of Extraordinary…",
+      "url": "https://www.the-numbers.com/movie/League-of-Extraordinary-Gentlemen-The-(2003)"
+    },
+    {
+      "title": "Catwoman",
+      "url": "https://www.the-numbers.com/movie/Catwoman-(2004)"
+    },
+    {
+      "title": "Constantine",
+      "url": "https://www.the-numbers.com/movie/Constantine"
+    },
+    {
+      "title": "Batman Begins",
+      "url": "https://www.the-numbers.com/movie/Batman-Begins"
+    },
+    {
+      "title": "V for Vendetta",
+      "url": "https://www.the-numbers.com/movie/V-for-Vendetta"
+    },
+    {
+      "title": "Superman Returns",
+      "url": "https://www.the-numbers.com/movie/Superman-Returns"
+    },
+    {
+      "title": "The Dark Knight",
+      "url": "https://www.the-numbers.com/movie/Dark-Knight-The"
+    },
+    {
+      "title": "Watchmen",
+      "url": "https://www.the-numbers.com/movie/Watchmen"
+    },
+    {
+      "title": "The Losers",
+      "url": "https://www.the-numbers.com/movie/Losers-The"
+    },
+    {
+      "title": "Jonah Hex",
+      "url": "https://www.the-numbers.com/movie/Jonah-Hex"
+    },
+    {
+      "title": "Red",
+      "url": "https://www.the-numbers.com/movie/Red-(2010)"
+    },
+    {
+      "title": "Green Lantern",
+      "url": "https://www.the-numbers.com/movie/Green-Lantern-(2011)"
+    },
+    {
+      "title": "The Dark Knight Rises",
+      "url": "https://www.the-numbers.com/movie/Dark-Knight-Rises-The"
+    },
+    {
+      "title": "Man of Steel",
+      "url": "https://www.the-numbers.com/movie/Man-of-Steel"
+    },
+    {
+      "title": "Batman v Superman: Dawn of Justice",
+      "url": "https://www.the-numbers.com/movie/Batman-v-Superman-Dawn-of-Justice"
+    },
+    {
+      "title": "Suicide Squad",
+      "url": "https://www.the-numbers.com/movie/Suicide-Squad"
+    },
+    {
+      "title": "Wonder Woman",
+      "url": "https://www.the-numbers.com/movie/Wonder-Woman-(2017)"
+    },
+    {
+      "title": "Justice League",
+      "url": "https://www.the-numbers.com/movie/Justice-League-(2017)"
+    },
+    {
+      "title": "Teen Titans Go! To The Movies",
+      "url": "https://www.the-numbers.com/movie/Teen-Titans-Go-To-The-Movies"
+    },
+    {
+      "title": "Aquaman",
+      "url": "https://www.the-numbers.com/movie/Aquaman-(2018)"
+    },
+    {
+      "title": "Shazam!",
+      "url": "https://www.the-numbers.com/movie/Shazam-(2019)"
+    },
+    {
+      "title": "Joker",
+      "url": "https://www.the-numbers.com/movie/Joker-(2019)"
+    },
+    {
+      "title": "Birds of Prey ",
+      "url": "https://www.the-numbers.com/movie/Birds-of-Prey-(And-the-Fantabulous-Emancipation-of-One-Harley-Quinn)-(2020)"
+    },
+    {
+      "title": "Wonder Woman 1984",
+      "url": "https://www.the-numbers.com/movie/Wonder-Woman-1984-(2020)"
+    },
+    {
+      "title": "The Suicide Squad",
+      "url": "https://www.the-numbers.com/movie/Suicide-Squad-The-(2021)"
+    },
+    {
+      "title": "The Batman",
+      "url": "https://www.the-numbers.com/movie/Batman-The-(2021)"
+    },
+    {
+      "title": "Black Adam",
+      "url": "https://www.the-numbers.com/movie/Black-Adam-(2022)"
+    },
+    {
+      "title": "Shazam! Fury of the Gods",
+      "url": "https://www.the-numbers.com/movie/Shazam-Fury-of-the-Gods-(2022)"
+    },
+    {
+      "title": "The Flash",
+      "url": "https://www.the-numbers.com/movie/Flash-The"
+    },
+    {
+      "title": "Blue Beetle",
+      "url": "https://www.the-numbers.com/movie/Blue-Beetle-(2023)"
+    },
+    {
+      "title": "Aquaman and the Lost Kingdom",
+      "url": "https://www.the-numbers.com/movie/Aquaman-and-the-Lost-Kingdom-(2023)"
+    },
+    {
+      "title": "Man of Steel",
+      "url": "https://www.the-numbers.com/movie/Man-of-Steel"
+    },
+    {
+      "title": "Batman v Superman: Dawn of Justice",
+      "url": "https://www.the-numbers.com/movie/Batman-v-Superman-Dawn-of-Justice"
+    },
+    {
+      "title": "Suicide Squad",
+      "url": "https://www.the-numbers.com/movie/Suicide-Squad"
+    },
+    {
+      "title": "Wonder Woman",
+      "url": "https://www.the-numbers.com/movie/Wonder-Woman-(2017)"
+    },
+    {
+      "title": "Justice League",
+      "url": "https://www.the-numbers.com/movie/Justice-League-(2017)"
+    },
+    {
+      "title": "Aquaman",
+      "url": "https://www.the-numbers.com/movie/Aquaman-(2018)"
+    },
+    {
+      "title": "Shazam!",
+      "url": "https://www.the-numbers.com/movie/Shazam-(2019)"
+    },
+    {
+      "title": "Birds of Prey ",
+      "url": "https://www.the-numbers.com/movie/Birds-of-Prey-(And-the-Fantabulous-Emancipation-of-One-Harley-Quinn)-(2020)"
+    },
+    {
+      "title": "Wonder Woman 1984",
+      "url": "https://www.the-numbers.com/movie/Wonder-Woman-1984-(2020)"
+    },
+    {
+      "title": "The Suicide Squad",
+      "url": "https://www.the-numbers.com/movie/Suicide-Squad-The-(2021)"
+    },
+    {
+      "title": "Black Adam",
+      "url": "https://www.the-numbers.com/movie/Black-Adam-(2022)"
+    },
+    {
+      "title": "Shazam! Fury of the Gods",
+      "url": "https://www.the-numbers.com/movie/Shazam-Fury-of-the-Gods-(2022)"
+    },
+    {
+      "title": "The Flash",
+      "url": "https://www.the-numbers.com/movie/Flash-The"
+    },
+    {
+      "title": "Blue Beetle",
+      "url": "https://www.the-numbers.com/movie/Blue-Beetle-(2023)"
+    },
+    {
+      "title": "Aquaman and the Lost Kingdom",
+      "url": "https://www.the-numbers.com/movie/Aquaman-and-the-Lost-Kingdom-(2023)"
+    }
+  ],
+  "Transformers": [
+    {
+      "title": "Transformers",
+      "url": "https://www.the-numbers.com/movie/Transformers"
+    },
+    {
+      "title": "Transformers: Revenge of th…",
+      "url": "https://www.the-numbers.com/movie/Transformers-Revenge-of-the-Fallen"
+    },
+    {
+      "title": "Transformers: Dark of the Moon",
+      "url": "https://www.the-numbers.com/movie/Transformers-Dark-of-the-Moon-(2011)"
+    },
+    {
+      "title": "Transformers: Age of Extinc…",
+      "url": "https://www.the-numbers.com/movie/Transformers-Age-of-Extinction"
+    },
+    {
+      "title": "Transformers: The Last Knight",
+      "url": "https://www.the-numbers.com/movie/Transformers-The-Last-Knight"
+    },
+    {
+      "title": "Bumblebee",
+      "url": "https://www.the-numbers.com/movie/Bumblebee"
+    },
+    {
+      "title": "Transformers: Rise of the B…",
+      "url": "https://www.the-numbers.com/movie/Transformers-Rise-of-the-Beasts-(2023)"
+    }
+  ],
+  "Fast & Furious": [
+    {
+      "title": "The Fast and the Furious",
+      "url": "https://www.the-numbers.com/movie/Fast-and-the-Furious-The-(2001)"
+    },
+    {
+      "title": "2 Fast 2 Furious",
+      "url": "https://www.the-numbers.com/movie/2-Fast-2-Furious"
+    },
+    {
+      "title": "The Fast and the Furious: T…",
+      "url": "https://www.the-numbers.com/movie/Fast-and-the-Furious-Tokyo-Drift-The"
+    },
+    {
+      "title": "Fast & Furious",
+      "url": "https://www.the-numbers.com/movie/Fast-and-Furious-(2009)"
+    },
+    {
+      "title": "Fast Five",
+      "url": "https://www.the-numbers.com/movie/Fast-Five"
+    },
+    {
+      "title": "Fast and Furious 6",
+      "url": "https://www.the-numbers.com/movie/Fast-and-Furious-6"
+    },
+    {
+      "title": "Furious 7",
+      "url": "https://www.the-numbers.com/movie/Furious-7"
+    },
+    {
+      "title": "The Fate of the Furious",
+      "url": "https://www.the-numbers.com/movie/Fate-of-the-Furious-The"
+    },
+    {
+      "title": "Fast & Furious Presents: Ho…",
+      "url": "https://www.the-numbers.com/movie/Fast-and-Furious-Presents-Hobbs-and-Shaw-(2019)"
+    },
+    {
+      "title": "F9: The Fast Saga",
+      "url": "https://www.the-numbers.com/movie/F9-The-Fast-Saga-(2021)"
+    },
+    {
+      "title": "Fast X",
+      "url": "https://www.the-numbers.com/movie/Fast-X-(2023)"
+    }
+  ]
+}
