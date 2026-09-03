@@ -59,7 +59,7 @@ export function CalculatorView({ split }: Props) {
       )}
 
       {selected && result && (
-        <div className="result-stage">
+        <div className="result-stage metric-change-motion" key={selected.id}>
           <header className="result-heading">
             <div><span>{selected.from_cache ? "Cached lookup" : "Fresh lookup"}</span><h2>{selected.title}</h2><p>Retrieved {new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(selected.as_of))}</p></div>
             <a href={selected.source_url} target="_blank" rel="noreferrer">View source ↗</a>

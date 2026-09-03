@@ -63,7 +63,7 @@ export function MarketView() {
       <header className="market-hero">
         <span className="section-label">Domestic market</span>
         <h1>Compare the shape of the box office.</h1>
-        <div className="market-big-number"><strong>{topShare.toFixed(1)}%</strong><span>of {active.year} domestic gross came from the top ten.</span></div>
+        <div className="market-big-number"><div className="market-number-motion" key={active.year}><strong>{topShare.toFixed(1)}%</strong><span>of {active.year} domestic gross came from the top ten.</span></div></div>
         <label className="focus-year-control">Focused year
           <select aria-label="Focused market year" value={active.year} onChange={(event) => setFocusYear(Number(event.target.value))}>
             {years.map((year) => <option key={year.year} value={year.year}>{year.year}</option>)}
@@ -89,7 +89,7 @@ export function MarketView() {
         </div>
       </section>
 
-      <div className="market-stats">
+      <div className="market-stats metric-change-motion" key={`stats-${active.year}`}>
         <div><small>Total domestic</small><b>{money(active.domestic)}</b></div>
         <div><small>Films released</small><b>{active.films.toLocaleString()}</b></div>
         <div><small>Top ten</small><b>{money(active.top10)}</b></div>
@@ -102,6 +102,7 @@ export function MarketView() {
           <p>{comparedYears.join(" · ")}</p>
         </div>
         <div className="chart-wrap market-comparison-chart" role="img" aria-label={`${currentMetric} comparison for ${comparedYears.join(", ")}`}>
+          <div className="chart-change-motion" key={`${metric}-${comparedYears.join("-")}`}>
           <ResponsiveContainer width="100%" height="100%">
             {metric === "tiers" ? (
               <LineChart data={tierData} margin={{ top: 16, right: 12, left: -2, bottom: 4 }}>
@@ -122,11 +123,12 @@ export function MarketView() {
               </BarChart>
             )}
           </ResponsiveContainer>
+          </div>
         </div>
         {metric === "tiers" && selectedData.some((year) => year.tiers_estimated) && <p className="chart-estimate-note">2025 tier revenue and film counts are estimates derived proportionally from the 2024 tier distribution; the 2025 annual totals are sourced figures.</p>}
       </section>
 
-      <section className="tier-section">
+      <section className="tier-section metric-change-motion" key={`tiers-${active.year}`}>
         <div className="section-heading"><div><span>{active.year} tiers</span><h2>Revenue beyond the top ten</h2></div><p>{active.tiers_estimated ? "Estimated from 2024 distribution" : "Tier model"}</p></div>
         {active.tiers_estimated && <div className="estimate-badge">Estimate — proportional to 2024 tier revenue and film-count shares</div>}
         <div className="tier-list">
@@ -138,7 +140,7 @@ export function MarketView() {
       </section>
 
       {active.top_films.length > 0 && (
-        <section className="top-films-section">
+        <section className="top-films-section metric-change-motion" key={`leaders-${active.year}`}>
           <div className="section-heading"><div><span>{active.year} leaders</span><h2>Top ten films</h2></div><strong>{money(active.top10, false)}</strong></div>
           <ol>{active.top_films.map((film) => <li key={film.rank}><span>{film.rank}</span><b>{film.title}</b><strong>{money(film.gross, false)}</strong></li>)}</ol>
         </section>

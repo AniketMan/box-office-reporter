@@ -139,6 +139,7 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
   const [direction, setDirection] = useState<"asc" | "desc">("desc");
   const [filter, setFilter] = useState("");
   const [groupByPhase, setGroupByPhase] = useState(true);
+  const [openPhases, setOpenPhases] = useState<Record<string, boolean>>(() => Object.fromEntries(mcuPhases.map((phase) => [phase.name, true])));
   const query = useQuery({ queryKey: ["catalog", catalogId], queryFn: () => api.getCatalog({ id: catalogId }) });
   const catalog = query.data?.catalog;
 
@@ -225,19 +226,21 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
       <header className="catalog-hero">
         <BrandMark mark={catalog.mark} name={catalog.name} />
         <div className={`hero-stat ${sort === "worldwide" && direction === "desc" ? "hero-stat-pair" : ""}`} aria-live="polite">
-          {sort === "worldwide" && direction === "desc" ? (
-            <>
-              <div className="hero-stat-item"><span>Domestic gross</span><strong>{money(summary.totals.domestic)}</strong></div>
-              <div className="hero-stat-item"><span>Worldwide gross</span><strong>{money(summary.totals.worldwide)}</strong></div>
-              <small>{summary.count} films · default view</small>
-            </>
-          ) : (
-            <>
-              <span>{activeMetric.label}</span>
-              <strong>{activeMetric.value}</strong>
-              <small>{activeMetric.detail}</small>
-            </>
-          )}
+          <div className="hero-metric-motion" key={`${sort}-${direction}`}>
+            {sort === "worldwide" && direction === "desc" ? (
+              <>
+                <div className="hero-stat-item"><span>Domestic gross</span><strong>{money(summary.totals.domestic)}</strong></div>
+                <div className="hero-stat-item"><span>Worldwide gross</span><strong>{money(summary.totals.worldwide)}</strong></div>
+                <small>{summary.count} films · default view</small>
+              </>
+            ) : (
+              <>
+                <span>{activeMetric.label}</span>
+                <strong>{activeMetric.value}</strong>
+                <small>{activeMetric.detail}</small>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
@@ -286,14 +289,17 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
       </div>
 
       {catalogId === "mcu" && groupByPhase ? (
-        <div className="phase-stack" aria-label="MCU phases">
-          {phaseGroups.map((phase) => (
-            <details className="phase-section" key={phase.name} open>
-              <summary className="phase-heading">
+        <div className="phase-stack ledger-results-motion" key={`phases-${sort}-${direction}-${filter}`} aria-label="MCU phases">
+          {phaseGroups.map((phase) => {
+            const isOpen = openPhases[phase.name] ?? true;
+            return (
+            <section className="phase-section" key={phase.name} data-open={isOpen}>
+              <button type="button" className="phase-heading" aria-expanded={isOpen} onClick={() => setOpenPhases((current) => ({ ...current, [phase.name]: !isOpen }))}>
                 <span className="phase-name"><small>Marvel Cinematic Universe</small><strong>{phase.name}</strong></span>
                 <span className="phase-meta"><b>{phase.summary.count} films</b><span>{money(phase.summary.totals.worldwide)} worldwide</span></span>
                 <span className="phase-chevron" aria-hidden="true">⌄</span>
-              </summary>
+              </button>
+              <div className="phase-collapse">
               <div className="phase-content">
                 {phase.films.length ? (
                   <>
@@ -301,7 +307,7 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
                       <table className="film-table">
                         <colgroup>{columns.map(([key]) => <col key={key} className={sort === key ? "is-sorted" : ""} />)}</colgroup>
                         <thead><tr>{columns.map(([key, label]) => <th key={key} className={key === "title" ? "title-cell" : ""} aria-sort={sort === key ? (direction === "asc" ? "ascending" : "descending") : "none"}><button onClick={() => sortBy(key)} aria-label={`Sort ${phase.name} by ${label}`}>{label}{sortIndicator(key)}</button></th>)}</tr></thead>
-                        <tbody>{phase.films.map((film, index) => { const calc = calculateFilm(film, split); return (
+                        <tbody key={`${phase.name}-${sort}-${direction}-${filter}`} className="film-rows-motion">{phase.films.map((film, index) => { const calc = calculateFilm(film, split); return (
                           <tr key={`${film.n}-${film.title}-${index}`}>
                             <td>{shortDate(film.release)}</td><td className="title-cell">{film.source_url ? <a href={film.source_url} target="_blank" rel="noreferrer">{film.title} ↗</a> : film.title}</td><td>{money(film.budget, false)}</td><td>{money(film.domestic, false)}</td><td>{money(calc.international, false)}</td><td>{money(film.worldwide, false)}</td><td>{money(calc.grossProfit, false)}</td><td>{money(calc.studioRevenue, false)}</td><td>{money(calc.studioProfit, false)}</td><td>{rating(film.rt_critics)}</td><td>{rating(film.rt_audience)}</td><td>{film.cinemascore ?? "—"}</td>
                           </tr>
@@ -324,16 +330,18 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
                   </>
                 ) : <p className="phase-empty">No films in this phase match the current filter.</p>}
               </div>
-            </details>
-          ))}
+              </div>
+            </section>
+            );
+          })}
         </div>
       ) : (
-        <>
+        <div className="ledger-results-motion" key={`all-${sort}-${direction}-${filter}`}>
           <div className="film-table-card">
             <table className="film-table">
               <colgroup>{columns.map(([key]) => <col key={key} className={sort === key ? "is-sorted" : ""} />)}</colgroup>
               <thead><tr>{columns.map(([key, label]) => <th key={key} className={key === "title" ? "title-cell" : ""} aria-sort={sort === key ? (direction === "asc" ? "ascending" : "descending") : "none"}><button onClick={() => sortBy(key)} aria-label={`Sort by ${label}`}>{label}{sortIndicator(key)}</button></th>)}</tr></thead>
-              <tbody>{sortedFilms.map((film, index) => { const calc = calculateFilm(film, split); return (
+              <tbody key={`${sort}-${direction}-${filter}`} className="film-rows-motion">{sortedFilms.map((film, index) => { const calc = calculateFilm(film, split); return (
                 <tr key={`${film.n}-${film.title}-${index}`}>
                   <td>{shortDate(film.release)}</td><td className="title-cell">{film.source_url ? <a href={film.source_url} target="_blank" rel="noreferrer">{film.title} ↗</a> : film.title}</td><td>{money(film.budget, false)}</td><td>{money(film.domestic, false)}</td><td>{money(calc.international, false)}</td><td>{money(film.worldwide, false)}</td><td>{money(calc.grossProfit, false)}</td><td>{money(calc.studioRevenue, false)}</td><td>{money(calc.studioProfit, false)}</td><td>{rating(film.rt_critics)}</td><td>{rating(film.rt_audience)}</td><td>{film.cinemascore ?? "—"}</td>
                 </tr>
@@ -346,7 +354,7 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
             </table>
           </div>
           <div className="film-list film-list-mobile">{sortedFilms.map((film, index) => <FilmLedger key={`${film.n}-${film.title}-${index}`} film={film} split={split} sort={sort} />)}</div>
-        </>
+        </div>
       )}
       <section className="mobile-summary" aria-label="Collection summary rows">
         <h3>Collection summary</h3>

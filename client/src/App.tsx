@@ -51,7 +51,9 @@ export function App() {
         </nav>
       </div>
       <main className="app-content">
-        {page === "calculator" ? <CalculatorView split={studioSplit} /> : page === "explorer" ? <ExplorerView split={studioSplit} /> : page === "market" ? <MarketView /> : catalogs.error ? <div className="error-state">Film data could not be loaded.</div> : <CatalogView key={activeCatalog} catalogId={activeCatalog} catalogs={catalogList} onCatalogChange={setPage} split={studioSplit} />}
+        <div className="page-transition" key={page}>
+          {page === "calculator" ? <CalculatorView split={studioSplit} /> : page === "explorer" ? <ExplorerView split={studioSplit} /> : page === "market" ? <MarketView /> : catalogs.error ? <div className="error-state">Film data could not be loaded.</div> : <CatalogView catalogId={activeCatalog} catalogs={catalogList} onCatalogChange={setPage} split={studioSplit} />}
+        </div>
       </main>
     </div>
   );

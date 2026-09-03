@@ -57,7 +57,7 @@ export function ExplorerView({ split }: Props) {
       </div>
       <div className="filter-chips" aria-label="Collection filter"><button className={catalog === "all" ? "active" : ""} onClick={() => setCatalog("all")}>All</button>{catalogs.map(([id, name]) => <button key={id} className={catalog === id ? "active" : ""} onClick={() => setCatalog(id)}>{name}</button>)}</div>
       {collection.isPending ? <div className="loading-state">Loading the unified film index…</div> : collection.error ? <div className="error-state">The film index could not be loaded.</div> : !selectedOption ? <div className="empty-result"><h2>No films match</h2><p>Clear the search or choose another collection.</p></div> : detail.isPending ? <div className="loading-state">Loading {selectedOption.title}…</div> : !selected ? <div className="error-state">That film could not be loaded.</div> : !calc ? <div className="empty-result"><h2>Calculation unavailable</h2><p>This supplied row reports worldwide gross below domestic gross, so derived values are withheld.</p></div> : (
-        <>
+        <div className="metric-change-motion" key={selected.id}>
           <section className="explorer-stage">
             <header><div><span>{selected.catalog_title}</span><h2>{selected.title}</h2><p>{shortDate(selected.release)}{selected.as_of ? ` · retrieved ${new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(selected.as_of))}` : ""}</p></div>{selected.source_url ? <a href={selected.source_url} target="_blank" rel="noreferrer">The Numbers ↗</a> : <small>Source link unavailable in supplied row</small>}</header>
             <div className="film-full-row" aria-label={`${selected.title} full financial details`}>
@@ -66,7 +66,7 @@ export function ExplorerView({ split }: Props) {
             <div className="single-chart" role="img" aria-label={`${selected.title} budget and revenue comparison`}><ResponsiveContainer width="100%" height="100%"><BarChart data={chartData} layout="vertical" margin={{ top: 8, right: 18, left: 18, bottom: 8 }}><CartesianGrid stroke="var(--chart-grid)" horizontal={false} /><XAxis type="number" domain={["auto", "auto"]} tickFormatter={(value) => money(Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} /><YAxis type="category" dataKey="name" width={100} tick={{ fill: "var(--text)", fontSize: 11 }} axisLine={false} tickLine={false} /><Tooltip formatter={(value: number) => money(value, false)} contentStyle={{ background: "var(--card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} /><Bar dataKey="value" radius={[0, 3, 3, 0]}>{chartData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}</Bar></BarChart></ResponsiveContainer></div>
           </section>
           <ProgressionChart filmId={selected.id} sourceUrl={selected.source_url} title={selected.title} domestic={selected.domestic} />
-        </>
+        </div>
       )}
     </section>
   );
