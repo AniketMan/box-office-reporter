@@ -6,14 +6,16 @@ import { CalculatorView } from "./features/calculator/CalculatorView";
 import { CatalogView } from "./features/catalog/CatalogView";
 import { MarketView } from "./features/market/MarketView";
 import { ExplorerView } from "./features/explorer/ExplorerView";
+import { ComparisonView } from "./features/comparison/ComparisonView";
 import type { Split } from "./lib";
 
-type Page = "calculator" | "explorer" | "market" | string;
+type Page = "calculator" | "explorer" | "comparison" | "market" | string;
 
 const studioSplit: Split = { domestic: 60, international: 40 };
 const toolLabels: Record<string, string> = {
   calculator: "Single Film",
   explorer: "All Films",
+  comparison: "Compare",
   market: "Market Overview",
 };
 
@@ -32,6 +34,7 @@ export function App() {
         <nav aria-label="Film analysis tools" className="global-nav-inner">
           <button className={page === "calculator" ? "active" : ""} onClick={() => setPage("calculator")}>Single Film</button>
           <button className={page === "explorer" ? "active" : ""} onClick={() => setPage("explorer")}>All Films</button>
+          <button className={page === "comparison" ? "active" : ""} onClick={() => setPage("comparison")}>Compare</button>
           <button className={page === "market" ? "active" : ""} onClick={() => setPage("market")}>Market</button>
           <span className="model-label">60% domestic · 40% international</span>
         </nav>
@@ -51,9 +54,7 @@ export function App() {
         </nav>
       </div>
       <main className="app-content">
-        <div className="page-transition" key={page}>
-          {page === "calculator" ? <CalculatorView split={studioSplit} /> : page === "explorer" ? <ExplorerView split={studioSplit} /> : page === "market" ? <MarketView /> : catalogs.error ? <div className="error-state">Film data could not be loaded.</div> : <CatalogView catalogId={activeCatalog} catalogs={catalogList} onCatalogChange={setPage} split={studioSplit} />}
-        </div>
+        {page === "calculator" ? <CalculatorView split={studioSplit} /> : page === "explorer" ? <ExplorerView split={studioSplit} /> : page === "comparison" ? <ComparisonView split={studioSplit} /> : page === "market" ? <MarketView /> : catalogs.error ? <div className="error-state">Film data could not be loaded.</div> : <CatalogView key={activeCatalog} catalogId={activeCatalog} catalogs={catalogList} onCatalogChange={setPage} split={studioSplit} />}
       </main>
     </div>
   );
