@@ -8,3 +8,6 @@ server/dist/
 app.db
 logs/
 audits/
+
+client/.tsbuildinfo.client
+server/.tsbuildinfo.server
