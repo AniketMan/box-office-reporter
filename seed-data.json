@@ -302,11 +302,44 @@
    "title": "Inside Out 2",
    "release": "2024-06-14",
    "budget": 200000000,
-   "domestic": 651321031,
-   "worldwide": 1668778335,
+   "domestic": 652980194,
+   "worldwide": 1698863816,
    "rt_critics": 91,
    "rt_audience": 96,
    "cinemascore": null
+  },
+  {
+   "n": 29,
+   "title": "Elio",
+   "release": "2025-06-20",
+   "budget": 150000000,
+   "domestic": 72987454,
+   "worldwide": 154291182,
+   "rt_critics": 83,
+   "rt_audience": 89,
+   "cinemascore": "A"
+  },
+  {
+   "n": 30,
+   "title": "Hoppers",
+   "release": "2026-03-06",
+   "budget": 150000000,
+   "domestic": 166010783,
+   "worldwide": 389686110,
+   "rt_critics": 94,
+   "rt_audience": 93,
+   "cinemascore": "A"
+  },
+  {
+   "n": 31,
+   "title": "Toy Story 5",
+   "release": "2026-06-19",
+   "budget": 250000000,
+   "domestic": 480294461,
+   "worldwide": 1147465495,
+   "rt_critics": 93,
+   "rt_audience": 94,
+   "cinemascore": "A"
   }
  ],
  "MCU": [
