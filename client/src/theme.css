@@ -75,7 +75,7 @@ button:active { transform: scale(.95); }
 
 .catalog-view, .calculator-view, .explorer-view, .market-view { width: 100%; min-width: 0; }
 .comparison-view { width: 100%; min-width: 0; padding-bottom: 100px; }
-.comparison-hero { padding: 72px max(24px, calc((100vw - 1392px)/2 + 24px)); background: linear-gradient(135deg, var(--black), color-mix(in srgb, var(--app-accent) 28%, var(--black))); color: var(--on-dark); }
+.comparison-hero { padding: 72px max(24px, calc((100vw - 1392px)/2 + 24px)); background: var(--canvas); color: var(--text); }
 .comparison-hero h1 { max-width: 760px; margin: 8px 0 12px; font: 600 clamp(38px, 6vw, 72px)/1 var(--display); letter-spacing: -1.2px; }
 .comparison-hero p { max-width: 680px; margin: 0; color: var(--muted-dark); font-size: 18px; }
 .comparison-picker, .comparison-summary, .comparison-table-wrap { width: min(1392px, calc(100% - 48px)); margin: 32px auto 0; }
@@ -111,7 +111,8 @@ button:active { transform: scale(.95); }
 
 /* Full-bleed collection tiles: one filmic identity per workbook page. */
 .catalog-view { --brand-bg: var(--tile-1); --brand-fg: #fffaf3; --brand-muted: #d3c7bb; --brand-rule: rgba(255,250,243,.28); --brand-accent: #efb35b; }
-.theme-pixar { --brand-bg: #173f46; --brand-accent: #f0b95d; }
+/* Pixar blue (#36a4e8, the collection accent) carries the header; the page below is a deep blue. */
+.theme-pixar { --brand-bg: #1c78c9; --brand-fg: #ffffff; --brand-muted: #d6e9fa; --brand-rule: rgba(255, 255, 255, .3); --brand-accent: #ffd45c; }
 /* Marvel Studios: black page, red only from the mark and the accent. */
 .theme-marvel { color-scheme: dark; --brand-bg: #000000; --brand-fg: #ffffff; --brand-muted: #b8b8b8; --brand-rule: rgba(255, 255, 255, .2); --brand-accent: #e50b14; }
 .theme-starwars { --brand-bg: #080808; --brand-fg: #f5cf54; --brand-muted: #d9c781; --brand-rule: rgba(245,207,84,.38); --brand-accent: #f5cf54; }
@@ -440,11 +441,26 @@ button, select, input, a, summary, .phase-section, .chart-panel, .tier-section, 
   --chart-secondary: var(--collection-chart-secondary);
   --chart-tertiary: var(--collection-chart-tertiary);
   --chart-fill: color-mix(in srgb, var(--collection-accent) 14%, transparent);
+  /* The kit's fields and segmented tabs in the collection's palette. */
+  --field-bg: var(--collection-card);
+  --field-bg-focus: color-mix(in oklch, var(--collection-card) 88%, var(--collection-text));
+  --field-text: var(--collection-text);
+  --field-label: var(--collection-dim);
+  --field-placeholder: color-mix(in oklch, var(--collection-dim) 75%, transparent);
+  --field-border: var(--collection-hairline);
+  --field-border-focus: var(--collection-accent);
+  --field-edge: transparent;
+  --field-edge-focus: transparent;
+  --field-glow: color-mix(in oklch, var(--collection-accent) 18%, transparent);
+  --mac-fill: color-mix(in oklch, var(--collection-text) 8%, transparent);
+  --mac-label: var(--collection-text);
+  --mac-segmented-pill: color-mix(in oklch, var(--collection-accent) 45%, var(--collection-card));
+  --mac-segmented-separator: var(--collection-hairline);
   min-height: calc(100vh - 96px);
   background: var(--collection-canvas);
   color: var(--collection-text);
 }
-.theme-pixar { --collection-canvas: #edf5f4; --collection-parchment: #dfecea; --collection-card: #f9fcfb; --collection-text: #163239; --collection-dim: #527076; --collection-hairline: #b9cfce; --collection-divider: #d4e3e1; --collection-accent: #1b7584; --collection-chart-secondary: #c58e36; --collection-chart-tertiary: #709b91; }
+.theme-pixar { --collection-canvas: #071a2e; --collection-parchment: #0c2440; --collection-card: #10294a; --collection-text: #f2f8ff; --collection-dim: #a8c6e4; --collection-hairline: #244a74; --collection-divider: #1a3a5e; --collection-accent: #36a4e8; --collection-chart-secondary: #7cc4f2; --collection-chart-tertiary: #ffd45c; }
 .theme-marvel { --collection-canvas: #000000; --collection-parchment: #0a0a0a; --collection-card: #111111; --collection-text: #f5f5f5; --collection-dim: #a3a3a3; --collection-hairline: #2b2b2b; --collection-divider: #1c1c1c; --collection-accent: #ff3b44; --collection-chart-secondary: #e50b14; --collection-chart-tertiary: #8a8a8a; }
 .theme-starwars { --collection-canvas: #f4f1e5; --collection-parchment: #e9e3cd; --collection-card: #fbf9f1; --collection-text: #29261c; --collection-dim: #746d54; --collection-hairline: #d2c69b; --collection-divider: #e3dbc0; --collection-accent: #876700; --collection-chart-secondary: #b58e23; --collection-chart-tertiary: #686553; }
 .theme-dc { --collection-canvas: #edf4f7; --collection-parchment: #dce9ef; --collection-card: #f8fbfc; --collection-text: #142f42; --collection-dim: #557184; --collection-hairline: #b8ccd7; --collection-divider: #d3e1e7; --collection-accent: #216a99; --collection-chart-secondary: #b58b3c; --collection-chart-tertiary: #708ea1; }
@@ -461,9 +477,49 @@ button, select, input, a, summary, .phase-section, .chart-panel, .tier-section, 
 .hero-stat-pair .hero-stat-item strong { margin-bottom: 0; font-size: clamp(32px, 4vw, 52px); overflow-wrap: anywhere; }
 .hero-stat-pair .hero-metric-motion > small { grid-column: 1 / -1; }
 
+/* Pages outside the collections are black with white text. These are the kit's
+   own surface and ink tokens, so its header, fields, menus and tabs follow. */
+:root {
+  --background: #000000;
+  --card: #0b0b0b;
+  --popover: #121212;
+  --secondary: #171717;
+  --muted: #121212;
+  --foreground: #ffffff;
+  --card-foreground: #ffffff;
+  --popover-foreground: #ffffff;
+  --secondary-foreground: #ffffff;
+  --muted-foreground: #a3a3a3;
+  --border: rgba(255, 255, 255, .12);
+  --input: rgba(255, 255, 255, .14);
+  --key-hover: rgba(255, 255, 255, .08);
+  --field-bg: #121212;
+  --field-bg-focus: #1a1a1a;
+  --field-text: #ffffff;
+  --field-label: #a3a3a3;
+  --field-placeholder: #6b6b6b;
+  --field-border: rgba(255, 255, 255, .12);
+  --field-border-focus: rgba(255, 255, 255, .3);
+  --mac-panel: rgba(18, 18, 18, .96);
+  --mac-label: #ffffff;
+  --mac-fill: rgba(255, 255, 255, .08);
+  --mac-fill-strong: rgba(255, 255, 255, .16);
+  --mac-segmented-pill: #3a3a3a;
+  --mac-segmented-separator: #2b2b2b;
+}
+
+/* Keys on the black pages: a black face with a white lit edge. The kit would
+   otherwise tint both from the time-of-day ground. Collection pages restate
+   both from their own accent (.collection-chrome). */
+:root,
+:root[data-ground="circadian"] {
+  --keycap-edge: #ffffff;
+  --keycap-ink: #141414;
+}
+
 /* Collections always use their dark palettes: the app chrome is dark-only. */
 .catalog-view { --collection-canvas: #171412; --collection-parchment: #211d1a; --collection-card: #25201d; --collection-text: #fffaf3; --collection-dim: #c8bbb0; --collection-hairline: #4a4038; --collection-divider: #352e29; --collection-accent: #efb35b; --collection-chart-secondary: #d07a4d; --collection-chart-tertiary: #8f7160; }
-.theme-pixar { --collection-canvas: #0f2023; --collection-parchment: #152d31; --collection-card: #19373b; --collection-text: #f1fbfa; --collection-dim: #acc9c8; --collection-hairline: #34585b; --collection-divider: #29484b; --collection-accent: #7bd2dc; --collection-chart-secondary: #efb657; --collection-chart-tertiary: #87aaa2; }
+.theme-pixar { --collection-canvas: #071a2e; --collection-parchment: #0c2440; --collection-card: #10294a; --collection-text: #f2f8ff; --collection-dim: #a8c6e4; --collection-hairline: #244a74; --collection-divider: #1a3a5e; --collection-accent: #36a4e8; --collection-chart-secondary: #7cc4f2; --collection-chart-tertiary: #ffd45c; }
 .theme-marvel { --collection-canvas: #000000; --collection-parchment: #0a0a0a; --collection-card: #111111; --collection-text: #f5f5f5; --collection-dim: #a3a3a3; --collection-hairline: #2b2b2b; --collection-divider: #1c1c1c; --collection-accent: #ff3b44; --collection-chart-secondary: #e50b14; --collection-chart-tertiary: #8a8a8a; }
 .theme-starwars { --collection-canvas: #11110e; --collection-parchment: #1b1a13; --collection-card: #222017; --collection-text: #fff9dc; --collection-dim: #c9c09a; --collection-hairline: #504a2c; --collection-divider: #3b3823; --collection-accent: #f5cf54; --collection-chart-secondary: #aa8d35; --collection-chart-tertiary: #8e8974; }
 .theme-dc { --collection-canvas: #0f1c25; --collection-parchment: #142937; --collection-card: #183447; --collection-text: #f3f9fc; --collection-dim: #abc3d2; --collection-hairline: #34566b; --collection-divider: #294658; --collection-accent: #74bbed; --collection-chart-secondary: #d6b76f; --collection-chart-tertiary: #7898ab; }
@@ -539,6 +595,8 @@ button, select, input, a, summary, .phase-section, .chart-panel, .tier-section, 
 .market-view > .market-note { margin: -32px auto 40px; }
 .market-trend-chart { height: 400px; margin-top: 16px; }
 .metric-toggles { display: flex; flex-wrap: wrap; gap: 10px 8px; }
+.metric-toggles .metric-toggle-off { opacity: .45; }
+.metric-toggles .metric-toggle-off:hover { opacity: .75; }
 @media (max-width: 640px) {
   .market-hero { flex-direction: column; align-items: stretch; padding: 40px 16px 24px; }
   .market-year-picker { width: 100%; }
@@ -546,3 +604,43 @@ button, select, input, a, summary, .phase-section, .chart-panel, .tier-section, 
   .market-note, .market-view > .market-note { width: calc(100% - 32px); }
   .market-trend-chart { height: 320px; }
 }
+
+/* On a collection page the top bars take that collection's header colours by
+   re-pointing the kit's own surface and ink tokens, so its header, keys and
+   select follow without any per-component overrides. */
+.collection-chrome .app-header-shell,
+.collection-chrome .collection-bar {
+  --background: var(--brand-bg, var(--tile-1));
+  --card: var(--brand-bg, var(--tile-1));
+  --popover: color-mix(in oklch, var(--brand-bg, var(--tile-1)) 88%, black);
+  --foreground: var(--brand-fg, #fffaf3);
+  --muted-foreground: var(--brand-muted, #d3c7bb);
+  --border: var(--brand-rule, rgba(255, 250, 243, .28));
+  --canvas: var(--brand-bg, var(--tile-1));
+  --dim: var(--brand-muted, #d3c7bb);
+  /* ground.css derives these from the time-of-day ground on :root, and derived
+     values don't recompute below it, so they are restated from the collection. */
+  --key-hover: color-mix(in oklch, var(--brand-fg, #fffaf3) 8%, transparent);
+  --keycap-ink: color-mix(in oklch, var(--brand-accent, #efb35b) 70%, var(--brand-bg, var(--tile-1)));
+  --keycap-edge: var(--brand-accent, #efb35b);
+  --field-bg: color-mix(in oklch, var(--brand-fg, #fffaf3) 10%, var(--brand-bg, var(--tile-1)));
+  --field-bg-focus: color-mix(in oklch, var(--brand-fg, #fffaf3) 16%, var(--brand-bg, var(--tile-1)));
+  --field-text: var(--brand-fg, #fffaf3);
+  --field-label: var(--brand-muted, #d3c7bb);
+  --field-border: var(--brand-rule, rgba(255, 250, 243, .28));
+  --field-border-focus: var(--brand-accent, #efb35b);
+  --field-edge: transparent;
+  --field-edge-focus: transparent;
+  color: var(--brand-fg, #fffaf3);
+}
+/* The open dropdown list (a portal on <body>) in the same colours. */
+.collection-chrome .typical-menu {
+  --mac-panel: color-mix(in oklch, var(--brand-bg, var(--tile-1)) 96%, var(--brand-fg, #fffaf3));
+  --mac-label: var(--brand-fg, #fffaf3);
+  --mac-glyph: var(--brand-fg, #fffaf3);
+  --mac-edge: var(--brand-rule, rgba(255, 250, 243, .28));
+  --mac-fill-strong: color-mix(in oklch, var(--brand-accent, #efb35b) 28%, transparent);
+  --mac-placeholder: var(--brand-muted, #d3c7bb);
+  color: var(--brand-fg, #fffaf3);
+}
+.collection-chrome .collection-bar { background: var(--brand-bg, var(--tile-1)); border-bottom-color: var(--brand-rule, rgba(255, 250, 243, .28)); }

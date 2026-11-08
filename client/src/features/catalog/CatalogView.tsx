@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, Cell, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { SegmentedTabs, Select, TextInput } from "@typglow/sdk/ui";
 import { api, type ApiResponse } from "../../api";
-import { average, calculateFilm, cinemaScoreOrder, money, shortDate, type Split } from "../../lib";
+import { average, barCursor, calculateFilm, cinemaScoreOrder, money, shortDate, type Split } from "../../lib";
 // Marvel prints "STUDIOS" in white on dark grounds; this copy only swaps that black fill.
 import marvelLogo from "../../assets/marvel-studios-on-dark.svg";
 import starWarsLogo from "../../assets/starwars-mask.png";
@@ -228,7 +228,7 @@ export function CatalogView({ catalogId, split }: Props) {
               <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
               <XAxis dataKey="name" tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} interval={0} />
               <YAxis tickFormatter={(value) => money(Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} width={58} />
-              <Tooltip formatter={(value: number) => money(value, false)} contentStyle={{ background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
+              <Tooltip cursor={barCursor} formatter={(value: number) => money(value, false)} contentStyle={{ background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
               <ReferenceLine y={0} stroke="var(--chart-grid)" />
               <Bar dataKey="value" radius={[3, 3, 0, 0]}>{chartData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}</Bar>
             </BarChart>

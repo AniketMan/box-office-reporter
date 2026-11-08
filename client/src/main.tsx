@@ -25,7 +25,8 @@ createRoot(rootEl).render(
   <StrictMode>
     <QueryClientProvider client={spaceQueryClient}>
       <div className="hatch-space-root" data-hatch-space-root>
-        <TypicalGround>
+        {/* A fixed ground: the app is black and white rather than following the time of day. */}
+        <TypicalGround follow={false}>
           <App />
         </TypicalGround>
       </div>

@@ -4,7 +4,7 @@ import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContai
 import { SecondaryButton, SegmentedTabs, TextInput } from "@typglow/sdk/ui";
 import { api, type ApiResponse } from "../../api";
 import { MetricToggles } from "../../components/MetricToggles";
-import { calculateFilm, money, shortDate, type Split } from "../../lib";
+import { barCursor, calculateFilm, lineCursor, money, shortDate, type Split } from "../../lib";
 
 type Film = ApiResponse<typeof api, "listFilmOptions">["options"][number];
 type Metric = "budget" | "domestic" | "international" | "worldwide" | "grossProfit" | "studioRevenue" | "studioProfit";
@@ -12,14 +12,14 @@ type WeeklyMode = "cumulative" | "gross";
 
 const maxFilms = 8;
 const colors = ["#efb35b", "#4f9bd8", "#d87555", "#83b89a", "#b58bd2", "#e48ab0", "#8dc7c7", "#d4c47a"];
-const metrics: Array<{ id: Metric; label: string; color: string }> = [
-  { id: "worldwide", label: "Worldwide", color: "var(--app-accent)" },
-  { id: "domestic", label: "Domestic", color: "var(--chart-secondary)" },
-  { id: "international", label: "International", color: "var(--chart-tertiary)" },
-  { id: "budget", label: "Budget", color: "var(--chart-muted)" },
-  { id: "grossProfit", label: "Gross profit", color: "var(--series-4)" },
-  { id: "studioRevenue", label: "Studio revenue", color: "var(--series-5)" },
-  { id: "studioProfit", label: "Studio profit", color: "var(--series-6)" },
+const metrics: Array<{ id: Metric; label: string; color: string; description: string }> = [
+  { id: "worldwide", label: "Worldwide", color: "var(--app-accent)", description: "Total ticket sales everywhere: domestic plus international." },
+  { id: "domestic", label: "Domestic", color: "var(--chart-secondary)", description: "Ticket sales in the US and Canada." },
+  { id: "international", label: "International", color: "var(--chart-tertiary)", description: "Ticket sales outside the US and Canada: worldwide minus domestic." },
+  { id: "budget", label: "Budget", color: "var(--chart-muted)", description: "Reported production budget. Marketing is not included." },
+  { id: "grossProfit", label: "Gross profit", color: "var(--series-4)", description: "Worldwide gross minus budget, before theaters take their share." },
+  { id: "studioRevenue", label: "Studio revenue", color: "var(--series-5)", description: "The studio's modeled share: 60% of domestic plus 40% of international." },
+  { id: "studioProfit", label: "Studio profit", color: "var(--series-6)", description: "Studio revenue minus budget." },
 ];
 const tooltipStyle = { background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" };
 
@@ -98,7 +98,7 @@ export function ComparisonView({ split }: { split: Split }) {
                 <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
                 <XAxis dataKey="week" tickFormatter={(value) => `W${value}`} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis tickFormatter={(value) => money(Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} width={64} />
-                <Tooltip formatter={(value: number, name: string) => [money(value, false), name]} labelFormatter={(value) => `Week ${value}`} contentStyle={tooltipStyle} />
+                <Tooltip cursor={lineCursor} formatter={(value: number, name: string) => [money(value, false), name]} labelFormatter={(value) => `Week ${value}`} contentStyle={tooltipStyle} />
                 <Legend />
                 {selected.map((film, index) => progressions[index]?.data?.status === "available" && <Line key={film.id} type="monotone" dataKey={film.id} name={film.title} stroke={colors[index % colors.length]} strokeWidth={2.5} dot={false} connectNulls />)}
               </LineChart>
@@ -120,7 +120,7 @@ export function ComparisonView({ split }: { split: Split }) {
               <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
               <XAxis dataKey="name" interval={0} tickFormatter={shortTitle} tick={{ fill: "var(--text)", fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(value) => money(Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} width={64} />
-              <Tooltip formatter={(value: number, name: string) => [money(value, false), name]} contentStyle={tooltipStyle} />
+              <Tooltip cursor={barCursor} formatter={(value: number, name: string) => [money(value, false), name]} contentStyle={tooltipStyle} />
               {metrics.filter((item) => activeMetrics.includes(item.id)).map((item) => <Bar key={item.id} dataKey={item.id} name={item.label} fill={item.color} radius={[3, 3, 0, 0]} />)}
             </BarChart>
           </ResponsiveContainer>

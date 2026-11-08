@@ -64,6 +64,16 @@ export function App() {
     return () => observer.disconnect();
   }, []);
 
+  // On a collection page the top bar and its dropdown take that collection's
+  // colours (see .collection-chrome). The class goes on <body> because the
+  // kit draws the open dropdown list in a portal at the end of the body.
+  const chromeTheme = !isTool && selectedCatalog ? `theme-${selectedCatalog.mark}` : null;
+  useEffect(() => {
+    if (!chromeTheme) return;
+    document.body.classList.add("collection-chrome", chromeTheme);
+    return () => document.body.classList.remove("collection-chrome", chromeTheme);
+  }, [chromeTheme]);
+
   function setPage(next: Page) {
     if (next === page) return;
     window.location.hash = `/${encodeURIComponent(next)}`;

@@ -17,6 +17,11 @@ export function calculateFilm(input: FinancialInput, split: Split) {
   };
 }
 
+// Chart hover highlights: a faint wash of the page's text colour, not the
+// library's default light-grey block.
+export const barCursor = { fill: "color-mix(in oklch, var(--text) 7%, transparent)" };
+export const lineCursor = { stroke: "color-mix(in oklch, var(--text) 30%, transparent)", strokeWidth: 1 };
+
 export function money(value: number, compact = true) {
   if (compact) {
     return new Intl.NumberFormat("en-US", {

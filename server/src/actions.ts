@@ -174,11 +174,16 @@ function validatedNumbersMovieUrl(value: string) {
   return value;
 }
 
-function parseWeekendProgression(html: string) {
-  const start = html.search(/(?:Weekend|Weekly) Box Office Performance/i);
+function parseWeeklyProgression(html: string) {
+  // Prefer the full-week table: its grosses add up to the running total and the
+  // last total equals the domestic gross. The weekend table (Fri-Sun only) is
+  // the fallback for pages without one.
+  const heading = "Box Office Performance";
+  let start = html.search(/Weekly Box Office Performance/i);
+  if (start < 0) start = html.search(/Weekend Box Office Performance/i);
   if (start < 0) return [];
-  const rest = html.slice(start);
-  const end = rest.search(/(?:Daily Box Office Performance|Box Office Summary Per Territory|Home Market Performance)/i);
+  const rest = html.slice(start + heading.length);
+  const end = rest.search(/(?:Weekend Box Office Performance|Weekly Box Office Performance|Daily Box Office Performance|Box Office Summary Per Territory|Home Market Performance)/i);
   const section = end > 0 ? rest.slice(0, end) : rest.slice(0, 120000);
   const rows: Array<{ week: number; date: string; gross: number; cumulative: number }> = [];
   for (const match of section.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)) {
@@ -441,7 +446,7 @@ export const Actions = {
         if (!movieUrl) return unavailable();
         const response = await fetch(movieUrl, { headers: { "User-Agent": "Mozilla/5.0 Film Calculator" }, signal: AbortSignal.timeout(15000) });
         if (!response.ok) return unavailable();
-        const weeks = parseWeekendProgression(await response.text());
+        const weeks = parseWeeklyProgression(await response.text());
         return { status: weeks.length ? "available" as const : "unavailable" as const, weeks, checked_at: new Date().toISOString() };
       } catch {
         return unavailable();

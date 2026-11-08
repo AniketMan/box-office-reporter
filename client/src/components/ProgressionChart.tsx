@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Bar, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { api } from "../api";
-import { money } from "../lib";
+import { barCursor, money } from "../lib";
 
 type Props = { filmId: string; sourceUrl: string | null; title: string; domestic: number };
 
@@ -35,7 +35,7 @@ export function ProgressionChart({ filmId, sourceUrl, title, domestic }: Props) 
             <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
             <XAxis dataKey="week" tickFormatter={(value) => `W${value}`} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis tickFormatter={(value) => money(Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} width={58} />
-            <Tooltip formatter={(value: number, name: string) => [money(value, false), name === "gross" ? "Weekly gross" : "Cumulative"]} labelFormatter={(value) => `Week ${value}`} contentStyle={{ background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
+            <Tooltip cursor={barCursor} formatter={(value: number, name: string) => [money(value, false), name === "gross" ? "Weekly gross" : "Cumulative"]} labelFormatter={(value) => `Week ${value}`} contentStyle={{ background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
             <Bar dataKey="gross" fill="var(--chart-secondary)" opacity={0.72} radius={[2, 2, 0, 0]} />
             <Line type="monotone" dataKey="cumulative" stroke="var(--app-accent)" strokeWidth={3} dot={false} />
           </ComposedChart>

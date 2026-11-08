@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Select } from "@typglow/sdk/ui";
 import { api, type ApiResponse } from "../../api";
-import { money } from "../../lib";
+import { lineCursor, money } from "../../lib";
 import { MetricToggles, type MetricOption } from "../../components/MetricToggles";
 
 type MarketYear = ApiResponse<typeof api, "getMarketOverview">["years"][number];
@@ -12,12 +12,12 @@ type Unit = "money" | "average" | "count" | "percent";
 
 const seriesColors = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--tep-green)"];
 const metrics: Array<MetricOption<Metric> & { unit: Unit }> = [
-  { id: "domestic", label: "Total domestic", color: seriesColors[0]!, unit: "money" },
-  { id: "top10", label: "Top-ten gross", color: seriesColors[1]!, unit: "money" },
-  { id: "rest", label: "Rest of market", color: seriesColors[2]!, unit: "money" },
-  { id: "average", label: "Average per film", color: seriesColors[3]!, unit: "average" },
-  { id: "films", label: "Films released", color: seriesColors[4]!, unit: "count" },
-  { id: "share", label: "Top-ten share", color: seriesColors[5]!, unit: "percent" },
+  { id: "domestic", label: "Total domestic", color: seriesColors[0]!, unit: "money", description: "Everything every film earned at US and Canadian theaters that year." },
+  { id: "top10", label: "Top-ten gross", color: seriesColors[1]!, unit: "money", description: "What the year's ten biggest films earned domestically, combined." },
+  { id: "rest", label: "Rest of market", color: seriesColors[2]!, unit: "money", description: "Total domestic minus the top ten: what every other film earned." },
+  { id: "average", label: "Average per film", color: seriesColors[3]!, unit: "average", description: "Total domestic divided by the number of films released. Plotted on its own axis." },
+  { id: "films", label: "Films released", color: seriesColors[4]!, unit: "count", description: "How many films played in US and Canadian theaters that year. Plotted on its own axis." },
+  { id: "share", label: "Top-ten share", color: seriesColors[5]!, unit: "percent", description: "The top ten's slice of the total, as a percentage. High means a few hits dominated the year." },
 ];
 const tooltipStyle = { background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" };
 
@@ -43,7 +43,7 @@ export function MarketView() {
   const [focusYear, setFocusYear] = useState<number | null>(null);
   const [activeMetrics, setActiveMetrics] = useState<Metric[]>(["domestic", "top10"]);
   const tierNames = useMemo(() => [...new Set(years.flatMap((year) => year.tiers.map((tier) => tier.name)))], [years]);
-  const tierOptions = tierNames.map((name, index) => ({ id: name, label: name, color: seriesColors[index % seriesColors.length]! }));
+  const tierOptions = tierNames.map((name, index) => ({ id: name, label: name, color: seriesColors[index % seriesColors.length]!, description: `Combined domestic gross of films outside the top ten whose own gross fell in the ${name} range.` }));
   const [hiddenTiers, setHiddenTiers] = useState<string[]>([]);
   const activeTiers = tierNames.filter((name) => !hiddenTiers.includes(name));
 
@@ -90,7 +90,7 @@ export function MarketView() {
               <XAxis dataKey="year" tick={{ fill: "var(--chart-muted)", fontSize: 12 }} axisLine={false} tickLine={false} />
               {/* One axis per unit in view: dollars on the left, anything else on the right. */}
               {units.map((unit, index) => <YAxis key={unit} yAxisId={unit} orientation={index === 0 ? "left" : "right"} tickFormatter={(value) => formatUnit(unit, Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} width={64} />)}
-              <Tooltip formatter={(value: number, name: string) => { const metric = metrics.find((item) => item.label === name); return [metric ? formatUnit(metric.unit, value, false) : value, name]; }} contentStyle={tooltipStyle} />
+              <Tooltip cursor={lineCursor} formatter={(value: number, name: string) => { const metric = metrics.find((item) => item.label === name); return [metric ? formatUnit(metric.unit, value, false) : value, name]; }} contentStyle={tooltipStyle} />
               <Legend />
               {shown.map((metric) => <Line key={metric.id} yAxisId={metric.unit} type="monotone" dataKey={metric.id} name={metric.label} stroke={metric.color} strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls />)}
             </LineChart>
@@ -108,7 +108,7 @@ export function MarketView() {
               <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
               <XAxis dataKey="year" tick={{ fill: "var(--chart-muted)", fontSize: 12 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(value) => money(Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} width={64} />
-              <Tooltip formatter={(value: number, name: string) => [money(value, false), name]} contentStyle={tooltipStyle} />
+              <Tooltip cursor={lineCursor} formatter={(value: number, name: string) => [money(value, false), name]} contentStyle={tooltipStyle} />
               <Legend />
               {tierOptions.filter((tier) => activeTiers.includes(tier.id)).map((tier) => <Line key={tier.id} type="monotone" dataKey={tier.id} name={tier.label} stroke={tier.color} strokeWidth={2.5} dot={{ r: 3 }} />)}
             </LineChart>

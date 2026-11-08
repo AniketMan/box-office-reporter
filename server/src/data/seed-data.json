@@ -5,8 +5,8 @@
       "title": "Toy Story",
       "release": "1995-11-22",
       "budget": 30000000,
-      "domestic": 192523233,
-      "worldwide": 365270951,
+      "domestic": 199244616,
+      "worldwide": 375455048,
       "rt_critics": 100,
       "rt_audience": 92,
       "cinemascore": "A"
@@ -39,7 +39,7 @@
       "release": "2001-11-02",
       "budget": 115000000,
       "domestic": 290149425,
-      "worldwide": 560483719,
+      "worldwide": 560483536,
       "rt_critics": 96,
       "rt_audience": 90,
       "cinemascore": "A+"
@@ -71,8 +71,8 @@
       "title": "Cars",
       "release": "2006-06-09",
       "budget": 70000000,
-      "domestic": 244082982,
-      "worldwide": 461630558,
+      "domestic": 255159210,
+      "worldwide": 485430903,
       "rt_critics": 75,
       "rt_audience": 80,
       "cinemascore": "A"
@@ -127,7 +127,7 @@
       "release": "2011-06-24",
       "budget": 200000000,
       "domestic": 191450875,
-      "worldwide": 560155383,
+      "worldwide": 558635481,
       "rt_critics": 39,
       "rt_audience": 49,
       "cinemascore": "A-"
@@ -149,7 +149,7 @@
       "release": "2013-06-21",
       "budget": 200000000,
       "domestic": 268488329,
-      "worldwide": 743455810,
+      "worldwide": 741738145,
       "rt_critics": 80,
       "rt_audience": 81,
       "cinemascore": "A"
@@ -160,7 +160,7 @@
       "release": "2015-06-19",
       "budget": 175000000,
       "domestic": 356461711,
-      "worldwide": 850566343,
+      "worldwide": 858752226,
       "rt_critics": 98,
       "rt_audience": 89,
       "cinemascore": "A"
@@ -171,7 +171,7 @@
       "release": "2015-11-25",
       "budget": 187500000,
       "domestic": 123087120,
-      "worldwide": 333771037,
+      "worldwide": 336622660,
       "rt_critics": 75,
       "rt_audience": 64,
       "cinemascore": "A"
@@ -204,7 +204,7 @@
       "release": "2017-11-22",
       "budget": 175000000,
       "domestic": 210460015,
-      "worldwide": 796401721,
+      "worldwide": 796135836,
       "rt_critics": 97,
       "rt_audience": 94,
       "cinemascore": "A+"
@@ -226,7 +226,7 @@
       "release": "2019-06-21",
       "budget": 200000000,
       "domestic": 434038008,
-      "worldwide": 1072817964,
+      "worldwide": 1071177215,
       "rt_critics": 97,
       "rt_audience": 94,
       "cinemascore": "A"
@@ -237,7 +237,7 @@
       "release": "2020-03-06",
       "budget": 200000000,
       "domestic": 61555145,
-      "worldwide": 133357601,
+      "worldwide": 133318468,
       "rt_critics": 88,
       "rt_audience": 95,
       "cinemascore": "A-"
@@ -248,7 +248,7 @@
       "release": "2021-06-18",
       "budget": 200000000,
       "domestic": 946154,
-      "worldwide": 120070522,
+      "worldwide": 120068830,
       "rt_critics": 95,
       "rt_audience": 88,
       "cinemascore": null
@@ -259,7 +259,7 @@
       "release": "2022-03-11",
       "budget": 200000000,
       "domestic": 1324302,
-      "worldwide": 51112314,
+      "worldwide": 51111836,
       "rt_critics": 91,
       "rt_audience": 85,
       "cinemascore": null
@@ -270,7 +270,7 @@
       "release": "2022-06-10",
       "budget": 175000000,
       "domestic": 1399001,
-      "worldwide": 12271142,
+      "worldwide": 21521622,
       "rt_critics": 95,
       "rt_audience": 67,
       "cinemascore": null
@@ -281,7 +281,7 @@
       "release": "2022-06-17",
       "budget": 200000000,
       "domestic": 118307188,
-      "worldwide": 218768299,
+      "worldwide": 226425420,
       "rt_critics": 74,
       "rt_audience": 84,
       "cinemascore": "A-"
@@ -292,7 +292,7 @@
       "release": "2023-06-16",
       "budget": 200000000,
       "domestic": 154426697,
-      "worldwide": 484855749,
+      "worldwide": 496444308,
       "rt_critics": 73,
       "rt_audience": 93,
       "cinemascore": "A"
@@ -336,7 +336,7 @@
       "release": "2026-06-19",
       "budget": 250000000,
       "domestic": 480294461,
-      "worldwide": 1147465495,
+      "worldwide": 1149397987,
       "rt_critics": 93,
       "rt_audience": 94,
       "cinemascore": "A"

@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { SecondaryButton, TextInput } from "@typglow/sdk/ui";
 import { api, type ApiResponse } from "../../api";
-import { calculateFilm, money, type Split } from "../../lib";
+import { barCursor, calculateFilm, money, type Split } from "../../lib";
 import { ProgressionChart } from "../../components/ProgressionChart";
 
 type SearchMatch = ApiResponse<typeof api, "searchFilms">["matches"][number];
@@ -84,7 +84,7 @@ export function CalculatorView({ split }: Props) {
                 <CartesianGrid stroke="var(--chart-grid)" horizontal={false} />
                 <XAxis type="number" domain={["auto", "auto"]} tickFormatter={(value) => money(Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="name" width={100} tick={{ fill: "var(--text)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <Tooltip formatter={(value: number) => money(value, false)} contentStyle={{ background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
+                <Tooltip cursor={barCursor} formatter={(value: number) => money(value, false)} contentStyle={{ background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
                 <Bar dataKey="value" radius={[0, 3, 3, 0]}>{chartData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}</Bar>
               </BarChart>
             </ResponsiveContainer>
