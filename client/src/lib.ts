@@ -36,6 +36,14 @@ export function shortDate(value: string | null) {
   return new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
+const cinemaScoreGrades = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F"];
+
+// Best grade first; plain string order would put "A" before "A+" and "A-" after both.
+export function cinemaScoreOrder(value: string | null) {
+  const index = value ? cinemaScoreGrades.indexOf(value.trim()) : -1;
+  return index < 0 ? cinemaScoreGrades.length : index;
+}
+
 export function average(values: Array<number | null>) {
   const real = values.filter((value): value is number => value != null);
   return real.length ? real.reduce((sum, value) => sum + value, 0) / real.length : null;

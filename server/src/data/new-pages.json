@@ -239,9 +239,9 @@
       "budget": 250000000,
       "domestic": 553261605,
       "worldwide": 1483359569,
-      "rt_critics": null,
-      "rt_audience": null,
-      "cinemascore": null,
+      "rt_critics": 94,
+      "rt_audience": 96,
+      "cinemascore": "A",
       "url": "https://www.the-numbers.com/movie/Odyssey-The-(2026)"
     }
   ],

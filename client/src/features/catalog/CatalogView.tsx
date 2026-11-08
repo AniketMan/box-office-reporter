@@ -1,22 +1,40 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, Cell, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { SegmentedTabs, Select, TextInput } from "@typglow/sdk/ui";
 import { api, type ApiResponse } from "../../api";
-import { average, calculateFilm, money, shortDate, type Split } from "../../lib";
-import marvelLogo from "../../assets/marvel-mask.png";
+import { average, calculateFilm, cinemaScoreOrder, money, shortDate, type Split } from "../../lib";
+// Marvel prints "STUDIOS" in white on dark grounds; this copy only swaps that black fill.
+import marvelLogo from "../../assets/marvel-studios-on-dark.svg";
 import starWarsLogo from "../../assets/starwars-mask.png";
-import dcLogo from "../../assets/dc.png";
+import dcLogo from "../../assets/dc-studios.svg";
 import harryPotterLogo from "../../assets/harrypotter.png";
 import pixarLogo from "../../assets/pixar-mask.png";
 import transformersLogo from "../../assets/transformers.png";
 import fastFuriousLogo from "../../assets/fast-furious-mask.png";
 
 type Film = ApiResponse<typeof api, "getCatalog">["catalog"] extends infer C ? C extends { films: Array<infer F> } ? F : never : never;
-type CatalogSummary = ApiResponse<typeof api, "listCatalogs">["catalogs"][number];
 type SortKey = "release" | "title" | "budget" | "domestic" | "international" | "worldwide" | "grossProfit" | "studioRevenue" | "studioProfit" | "rt_critics" | "rt_audience" | "cinemascore";
 
 type FinancialTotals = { budget: number; domestic: number; international: number; worldwide: number; grossProfit: number; studioRevenue: number; studioProfit: number };
 type FilmSummary = { totals: FinancialTotals; count: number; averages: FinancialTotals; avgCritic: number | null; avgAudience: number | null };
+
+const sortOptions = [
+  { value: "release:asc", label: "Release date ↑" },
+  { value: "release:desc", label: "Release date ↓" },
+  { value: "title:asc", label: "Title A–Z" },
+  { value: "title:desc", label: "Title Z–A" },
+  { value: "budget:desc", label: "Budget high–low" },
+  { value: "domestic:desc", label: "Domestic high–low" },
+  { value: "international:desc", label: "International high–low" },
+  { value: "worldwide:desc", label: "Worldwide high–low" },
+  { value: "grossProfit:desc", label: "Gross profit high–low" },
+  { value: "studioRevenue:desc", label: "Studio revenue high–low" },
+  { value: "studioProfit:desc", label: "Studio profit high–low" },
+  { value: "rt_critics:desc", label: "RT critics high–low" },
+  { value: "rt_audience:desc", label: "RT audience high–low" },
+  { value: "cinemascore:asc", label: "CinemaScore A–Z" },
+];
 
 const mcuPhases = [
   { name: "Phase 1", numbers: [1, 2, 3, 4, 5, 6] },
@@ -51,8 +69,6 @@ function summarizeFilms(films: Film[], split: Split): FilmSummary {
 
 type Props = {
   catalogId: string;
-  catalogs: CatalogSummary[];
-  onCatalogChange: (id: string) => void;
   split: Split;
 };
 
@@ -81,7 +97,7 @@ function BrandMark({ mark, name }: { mark: string; name: string }) {
   }
   return (
     <div className={`brand-type brand-${mark}`} aria-label={name}>
-      {mark === "cameron" && <span>FILMS OF JAMES</span>}
+      {mark === "cameron" && <span>The films of</span>}
       <strong>{name}</strong>
     </div>
   );
@@ -91,50 +107,7 @@ function rating(value: number | null) {
   return value == null ? "—" : `${Math.round(value)}%`;
 }
 
-function FilmLedger({ film, split, sort }: { film: Film; split: Split; sort: SortKey }) {
-  const calc = calculateFilm(film, split);
-  const sortedMetric = (() => {
-    if (sort === "budget") return { label: "Budget", value: money(film.budget), tone: "" };
-    if (sort === "domestic") return { label: "Domestic", value: money(film.domestic), tone: "" };
-    if (sort === "international") return { label: "International", value: money(calc.international), tone: "" };
-    if (sort === "grossProfit") return { label: "Gross profit", value: money(calc.grossProfit), tone: calc.grossProfit >= 0 ? "positive" : "negative" };
-    if (sort === "studioRevenue") return { label: "Studio revenue", value: money(calc.studioRevenue), tone: "" };
-    if (sort === "studioProfit") return { label: "Studio profit", value: money(calc.studioProfit), tone: calc.studioProfit >= 0 ? "positive" : "negative" };
-    if (sort === "rt_critics") return { label: "RT critics", value: rating(film.rt_critics), tone: "" };
-    if (sort === "rt_audience") return { label: "RT audience", value: rating(film.rt_audience), tone: "" };
-    if (sort === "cinemascore") return { label: "CinemaScore", value: film.cinemascore ?? "—", tone: "" };
-    if (sort === "worldwide") return { label: "Domestic", value: money(film.domestic), tone: "" };
-    return { label: "Worldwide", value: money(film.worldwide), tone: "" };
-  })();
-  return (
-    <details className="film-ledger">
-      <summary>
-        <span className="film-title-wrap">
-          <span className="film-title">{film.title}</span>
-          <span className="film-date">{shortDate(film.release)}</span>
-        </span>
-        <span className="summary-money"><small>Worldwide</small>{money(film.worldwide)}</span>
-        <span className={`summary-money ${sortedMetric.tone}`}><small>{sortedMetric.label}</small>{sortedMetric.value}</span>
-        <span className="open-cue" aria-hidden="true">⌄</span>
-      </summary>
-      <div className="film-detail-grid">
-        <div><small>Budget</small><b>{money(film.budget, false)}</b></div>
-        <div><small>Domestic</small><b>{money(film.domestic, false)}</b></div>
-        <div><small>International</small><b>{money(calc.international, false)}</b></div>
-        <div><small>Worldwide</small><b>{money(film.worldwide, false)}</b></div>
-        <div><small>Gross profit</small><b>{money(calc.grossProfit, false)}</b></div>
-        <div><small>Studio revenue</small><b>{money(calc.studioRevenue, false)}</b></div>
-        <div><small>Studio profit</small><b>{money(calc.studioProfit, false)}</b></div>
-        <div><small>RT critics</small><b>{rating(film.rt_critics)}</b></div>
-        <div><small>RT audience</small><b>{rating(film.rt_audience)}</b></div>
-        <div><small>CinemaScore</small><b>{film.cinemascore ?? "—"}</b></div>
-        <div className="film-source">{film.source_url ? <a href={film.source_url} target="_blank" rel="noreferrer">Open on The Numbers ↗</a> : <span>Source link unavailable</span>}</div>
-      </div>
-    </details>
-  );
-}
-
-export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Props) {
+export function CatalogView({ catalogId, split }: Props) {
   const [sort, setSort] = useState<SortKey>("worldwide");
   const [direction, setDirection] = useState<"asc" | "desc">("desc");
   const [filter, setFilter] = useState("");
@@ -154,6 +127,7 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
       if (sort === "grossProfit") return calc.grossProfit;
       if (sort === "studioRevenue") return calc.studioRevenue;
       if (sort === "studioProfit") return calc.studioProfit;
+      if (sort === "cinemascore") return cinemaScoreOrder(film.cinemascore);
       return film[sort] ?? "";
     };
     return catalog.films
@@ -177,7 +151,7 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
 
   function sortBy(key: SortKey) {
     if (sort === key) setDirection((value) => value === "asc" ? "desc" : "asc");
-    else { setSort(key); setDirection(key === "release" || key === "title" ? "asc" : "desc"); }
+    else { setSort(key); setDirection(key === "release" || key === "title" || key === "cinemascore" ? "asc" : "desc"); }
   }
 
   const sortIndicator = (key: SortKey) => sort === key ? (direction === "asc" ? " ↑" : " ↓") : "";
@@ -189,7 +163,7 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
     { name: "Budget", value: summary.totals.budget, color: "var(--chart-muted)" },
     { name: "Domestic", value: summary.totals.domestic, color: "var(--chart-secondary)" },
     { name: "International", value: summary.totals.international, color: "var(--chart-tertiary)" },
-    { name: "Studio revenue", value: summary.totals.studioRevenue, color: "var(--accent)" },
+    { name: "Studio revenue", value: summary.totals.studioRevenue, color: "var(--app-accent)" },
     { name: "Studio profit", value: summary.totals.studioProfit, color: "var(--ink)" },
   ];
 
@@ -218,11 +192,6 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
 
   return (
     <section className={`catalog-view theme-${catalog.mark}`}>
-      <div className="mobile-catalog-picker">
-        <label htmlFor="catalog-picker">Collection</label>
-        <select id="catalog-picker" value={catalogId} onChange={(event) => onCatalogChange(event.target.value)}>{catalogs.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>
-      </div>
-
       <header className="catalog-hero">
         <BrandMark mark={catalog.mark} name={catalog.name} />
         <div className={`hero-stat ${sort === "worldwide" && direction === "desc" ? "hero-stat-pair" : ""}`} aria-live="polite">
@@ -259,7 +228,7 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
               <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
               <XAxis dataKey="name" tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} interval={0} />
               <YAxis tickFormatter={(value) => money(Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} width={58} />
-              <Tooltip formatter={(value: number) => money(value, false)} contentStyle={{ background: "var(--card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
+              <Tooltip formatter={(value: number) => money(value, false)} contentStyle={{ background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
               <ReferenceLine y={0} stroke="var(--chart-grid)" />
               <Bar dataKey="value" radius={[3, 3, 0, 0]}>{chartData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}</Bar>
             </BarChart>
@@ -271,25 +240,15 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
         <div><span>Collection table</span><h2>{catalogId === "mcu" && !groupByPhase ? "All Films" : catalog.name}</h2><p>{sortedFilms.length} of {catalog.films.length} films</p></div>
         <div className="ledger-controls">
           {catalogId === "mcu" && (
-            <div className="phase-toggle-field">
-              <span>Phase grouping</span>
-              <div className="phase-toggle" role="group" aria-label="Phase grouping">
-                <button type="button" className={groupByPhase ? "active" : ""} aria-pressed={groupByPhase} onClick={() => setGroupByPhase(true)}>Grouped</button>
-                <button type="button" className={!groupByPhase ? "active" : ""} aria-pressed={!groupByPhase} onClick={() => setGroupByPhase(false)}>All films</button>
-              </div>
-            </div>
+            <SegmentedTabs ariaLabel="Phase grouping" tabs={[{ id: "grouped", label: "By phase" }, { id: "all", label: "All films" }]} value={groupByPhase ? "grouped" : "all"} onChange={(id) => setGroupByPhase(id === "grouped")} />
           )}
-          <label>Filter films<input aria-label="Filter films" value={filter} onChange={(event) => setFilter(event.target.value)} placeholder="Title, year, score…" /></label>
-          <label>Sort
-            <select aria-label="Sort films" value={`${sort}:${direction}`} onChange={(event) => { const [key, nextDirection] = event.target.value.split(":"); setSort(key as SortKey); setDirection(nextDirection as "asc" | "desc"); }}>
-              <option value="release:asc">Release date ↑</option><option value="release:desc">Release date ↓</option><option value="title:asc">Title A–Z</option><option value="title:desc">Title Z–A</option><option value="budget:desc">Budget high–low</option><option value="domestic:desc">Domestic high–low</option><option value="international:desc">International high–low</option><option value="worldwide:desc">Worldwide high–low</option><option value="grossProfit:desc">Gross profit high–low</option><option value="studioRevenue:desc">Studio revenue high–low</option><option value="studioProfit:desc">Studio profit high–low</option><option value="rt_critics:desc">RT critics high–low</option><option value="rt_audience:desc">RT audience high–low</option><option value="cinemascore:asc">CinemaScore A–Z</option>
-            </select>
-          </label>
+          <TextInput label="Filter films" value={filter} onChange={(event) => setFilter(event.target.value)} placeholder="Title, year, score…" />
+          <Select label="Sort" value={`${sort}:${direction}`} options={sortOptions} onChange={(event) => { const [key, nextDirection] = event.target.value.split(":"); setSort(key as SortKey); setDirection(nextDirection as "asc" | "desc"); }} />
         </div>
       </div>
 
       {catalogId === "mcu" && groupByPhase ? (
-        <div className="phase-stack ledger-results-motion" key={`phases-${sort}-${direction}-${filter}`} aria-label="MCU phases">
+        <div className="phase-stack ledger-results-motion" key={`phases-${sort}-${direction}`} aria-label="MCU phases">
           {phaseGroups.map((phase) => {
             const isOpen = openPhases[phase.name] ?? true;
             return (
@@ -304,10 +263,10 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
                 {phase.films.length ? (
                   <>
                     <div className="film-table-card phase-table-card">
-                      <table className="film-table">
+                      <div className="film-table-scroll"><table className="film-table">
                         <colgroup>{columns.map(([key]) => <col key={key} className={sort === key ? "is-sorted" : ""} />)}</colgroup>
                         <thead><tr>{columns.map(([key, label]) => <th key={key} className={key === "title" ? "title-cell" : ""} aria-sort={sort === key ? (direction === "asc" ? "ascending" : "descending") : "none"}><button onClick={() => sortBy(key)} aria-label={`Sort ${phase.name} by ${label}`}>{label}{sortIndicator(key)}</button></th>)}</tr></thead>
-                        <tbody key={`${phase.name}-${sort}-${direction}-${filter}`} className="film-rows-motion">{phase.films.map((film, index) => { const calc = calculateFilm(film, split); return (
+                        <tbody key={`${phase.name}-${sort}-${direction}`} className="film-rows-motion">{phase.films.map((film, index) => { const calc = calculateFilm(film, split); return (
                           <tr key={`${film.n}-${film.title}-${index}`}>
                             <td>{shortDate(film.release)}</td><td className="title-cell">{film.source_url ? <a href={film.source_url} target="_blank" rel="noreferrer">{film.title} ↗</a> : film.title}</td><td>{money(film.budget, false)}</td><td>{money(film.domestic, false)}</td><td>{money(calc.international, false)}</td><td>{money(film.worldwide, false)}</td><td>{money(calc.grossProfit, false)}</td><td>{money(calc.studioRevenue, false)}</td><td>{money(calc.studioProfit, false)}</td><td>{rating(film.rt_critics)}</td><td>{rating(film.rt_audience)}</td><td>{film.cinemascore ?? "—"}</td>
                           </tr>
@@ -316,17 +275,8 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
                           <tr><th colSpan={2}>{phase.name} totals</th><td>{money(phase.summary.totals.budget, false)}</td><td>{money(phase.summary.totals.domestic, false)}</td><td>{money(phase.summary.totals.international, false)}</td><td>{money(phase.summary.totals.worldwide, false)}</td><td>{money(phase.summary.totals.grossProfit, false)}</td><td>{money(phase.summary.totals.studioRevenue, false)}</td><td>{money(phase.summary.totals.studioProfit, false)}</td><td>—</td><td>—</td><td>—</td></tr>
                           <tr><th colSpan={2}>{phase.name} averages</th><td>{money(phase.summary.averages.budget, false)}</td><td>{money(phase.summary.averages.domestic, false)}</td><td>{money(phase.summary.averages.international, false)}</td><td>{money(phase.summary.averages.worldwide, false)}</td><td>{money(phase.summary.averages.grossProfit, false)}</td><td>{money(phase.summary.averages.studioRevenue, false)}</td><td>{money(phase.summary.averages.studioProfit, false)}</td><td>{rating(phase.summary.avgCritic)}</td><td>{rating(phase.summary.avgAudience)}</td><td>—</td></tr>
                         </tfoot>
-                      </table>
+                      </table></div>
                     </div>
-                    <div className="film-list phase-film-list">{phase.films.map((film, index) => <FilmLedger key={`${film.n}-${film.title}-${index}`} film={film} split={split} sort={sort} />)}</div>
-                    <section className="phase-mobile-summary" aria-label={`${phase.name} totals and averages`}>
-                      <div><small>Total budget</small><b>{money(phase.summary.totals.budget)}</b></div>
-                      <div><small>Worldwide</small><b>{money(phase.summary.totals.worldwide)}</b></div>
-                      <div><small>Studio profit</small><b>{money(phase.summary.totals.studioProfit)}</b></div>
-                      <div><small>Average worldwide</small><b>{money(phase.summary.averages.worldwide)}</b></div>
-                      <div><small>Avg. critics</small><b>{rating(phase.summary.avgCritic)}</b></div>
-                      <div><small>Avg. audience</small><b>{rating(phase.summary.avgAudience)}</b></div>
-                    </section>
                   </>
                 ) : <p className="phase-empty">No films in this phase match the current filter.</p>}
               </div>
@@ -336,12 +286,12 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
           })}
         </div>
       ) : (
-        <div className="ledger-results-motion" key={`all-${sort}-${direction}-${filter}`}>
+        <div className="ledger-results-motion" key={`all-${sort}-${direction}`}>
           <div className="film-table-card">
-            <table className="film-table">
+            <div className="film-table-scroll"><table className="film-table">
               <colgroup>{columns.map(([key]) => <col key={key} className={sort === key ? "is-sorted" : ""} />)}</colgroup>
               <thead><tr>{columns.map(([key, label]) => <th key={key} className={key === "title" ? "title-cell" : ""} aria-sort={sort === key ? (direction === "asc" ? "ascending" : "descending") : "none"}><button onClick={() => sortBy(key)} aria-label={`Sort by ${label}`}>{label}{sortIndicator(key)}</button></th>)}</tr></thead>
-              <tbody key={`${sort}-${direction}-${filter}`} className="film-rows-motion">{sortedFilms.map((film, index) => { const calc = calculateFilm(film, split); return (
+              <tbody key={`${sort}-${direction}`} className="film-rows-motion">{sortedFilms.map((film, index) => { const calc = calculateFilm(film, split); return (
                 <tr key={`${film.n}-${film.title}-${index}`}>
                   <td>{shortDate(film.release)}</td><td className="title-cell">{film.source_url ? <a href={film.source_url} target="_blank" rel="noreferrer">{film.title} ↗</a> : film.title}</td><td>{money(film.budget, false)}</td><td>{money(film.domestic, false)}</td><td>{money(calc.international, false)}</td><td>{money(film.worldwide, false)}</td><td>{money(calc.grossProfit, false)}</td><td>{money(calc.studioRevenue, false)}</td><td>{money(calc.studioProfit, false)}</td><td>{rating(film.rt_critics)}</td><td>{rating(film.rt_audience)}</td><td>{film.cinemascore ?? "—"}</td>
                 </tr>
@@ -351,39 +301,10 @@ export function CatalogView({ catalogId, catalogs, onCatalogChange, split }: Pro
                 <tr><th colSpan={2}>Per-film averages</th><td>{money(summary.averages.budget, false)}</td><td>{money(summary.averages.domestic, false)}</td><td>{money(summary.averages.international, false)}</td><td>{money(summary.averages.worldwide, false)}</td><td>{money(summary.averages.grossProfit, false)}</td><td>{money(summary.averages.studioRevenue, false)}</td><td>{money(summary.averages.studioProfit, false)}</td><td>—</td><td>—</td><td>—</td></tr>
                 <tr><th colSpan={2}>Average ratings</th><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>{rating(summary.avgCritic)}</td><td>{rating(summary.avgAudience)}</td><td>—</td></tr>
               </tfoot>
-            </table>
+            </table></div>
           </div>
-          <div className="film-list film-list-mobile">{sortedFilms.map((film, index) => <FilmLedger key={`${film.n}-${film.title}-${index}`} film={film} split={split} sort={sort} />)}</div>
         </div>
       )}
-      <section className="mobile-summary" aria-label="Collection summary rows">
-        <h3>Collection summary</h3>
-        <div className="mobile-summary-row">
-          <strong>Totals</strong>
-          <dl>
-            <div><dt>Budget</dt><dd>{money(summary.totals.budget, false)}</dd></div>
-            <div><dt>Domestic</dt><dd>{money(summary.totals.domestic, false)}</dd></div>
-            <div><dt>International</dt><dd>{money(summary.totals.international, false)}</dd></div>
-            <div><dt>Worldwide</dt><dd>{money(summary.totals.worldwide, false)}</dd></div>
-            <div><dt>Gross profit</dt><dd>{money(summary.totals.grossProfit, false)}</dd></div>
-            <div><dt>Studio revenue</dt><dd>{money(summary.totals.studioRevenue, false)}</dd></div>
-            <div><dt>Studio profit</dt><dd>{money(summary.totals.studioProfit, false)}</dd></div>
-          </dl>
-        </div>
-        <div className="mobile-summary-row">
-          <strong>Per-film averages</strong>
-          <dl>
-            <div><dt>Budget</dt><dd>{money(summary.averages.budget, false)}</dd></div>
-            <div><dt>Domestic</dt><dd>{money(summary.averages.domestic, false)}</dd></div>
-            <div><dt>International</dt><dd>{money(summary.averages.international, false)}</dd></div>
-            <div><dt>Worldwide</dt><dd>{money(summary.averages.worldwide, false)}</dd></div>
-            <div><dt>Gross profit</dt><dd>{money(summary.averages.grossProfit, false)}</dd></div>
-            <div><dt>Studio revenue</dt><dd>{money(summary.averages.studioRevenue, false)}</dd></div>
-            <div><dt>Studio profit</dt><dd>{money(summary.averages.studioProfit, false)}</dd></div>
-          </dl>
-        </div>
-        <div className="mobile-summary-row ratings-row"><strong>Average ratings</strong><b>{rating(summary.avgCritic)} critics · {rating(summary.avgAudience)} audience</b></div>
-      </section>
     </section>
   );
 }

@@ -642,7 +642,7 @@
   },
   {
    "n": 28,
-   "title": "Doctor Strange in the Multverse of Madness",
+   "title": "Doctor Strange in the Multiverse of Madness",
    "release": "2022-05-06",
    "budget": 290000000,
    "domestic": 411331607,
@@ -1145,7 +1145,7 @@
    "release": "2016-03-25",
    "budget": 263000000,
    "domestic": 330360194,
-   "worldwide": 190400000,
+   "worldwide": 874360194,
    "rt_critics": null,
    "rt_audience": null,
    "cinemascore": null
@@ -1156,7 +1156,7 @@
    "release": "2016-08-05",
    "budget": 175000000,
    "domestic": 325100054,
-   "worldwide": 80200000,
+   "worldwide": 749200054,
    "rt_critics": null,
    "rt_audience": null,
    "cinemascore": null
@@ -1167,7 +1167,7 @@
    "release": "2017-06-02",
    "budget": 150000000,
    "domestic": 412563408,
-   "worldwide": 36700000,
+   "worldwide": 822963408,
    "rt_critics": null,
    "rt_audience": null,
    "cinemascore": null
@@ -1200,7 +1200,7 @@
    "release": "2018-12-21",
    "budget": 160000000,
    "domestic": 335061807,
-   "worldwide": 266824291,
+   "worldwide": 1148861807,
    "rt_critics": null,
    "rt_audience": null,
    "cinemascore": null
@@ -1277,7 +1277,7 @@
    "release": "2022-10-21",
    "budget": 200000000,
    "domestic": 168283344,
-   "worldwide": 82078046,
+   "worldwide": 393583344,
    "rt_critics": null,
    "rt_audience": null,
    "cinemascore": null
@@ -1343,7 +1343,7 @@
    "release": "2016-03-25",
    "budget": 263000000,
    "domestic": 330360194,
-   "worldwide": 190400000,
+   "worldwide": 874360194,
    "rt_critics": 29,
    "rt_audience": 63,
    "cinemascore": null
@@ -1354,7 +1354,7 @@
    "release": "2016-08-05",
    "budget": 175000000,
    "domestic": 325100054,
-   "worldwide": 80200000,
+   "worldwide": 749200054,
    "rt_critics": 26,
    "rt_audience": 58,
    "cinemascore": null
@@ -1365,7 +1365,7 @@
    "release": "2017-06-02",
    "budget": 150000000,
    "domestic": 412563408,
-   "worldwide": 36700000,
+   "worldwide": 822963408,
    "rt_critics": 93,
    "rt_audience": 83,
    "cinemascore": null
@@ -1387,7 +1387,7 @@
    "release": "2018-12-21",
    "budget": 160000000,
    "domestic": 335061807,
-   "worldwide": 266824291,
+   "worldwide": 1148861807,
    "rt_critics": 65,
    "rt_audience": 72,
    "cinemascore": null
@@ -1442,7 +1442,7 @@
    "release": "2022-10-21",
    "budget": 200000000,
    "domestic": 168283344,
-   "worldwide": 82078046,
+   "worldwide": 393583344,
    "rt_critics": 38,
    "rt_audience": 88,
    "cinemascore": null

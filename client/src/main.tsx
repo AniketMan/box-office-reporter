@@ -1,8 +1,10 @@
 import { spaceQueryClient } from "@hatch/space-sdk/client";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { TypicalGround } from "@typglow/sdk/ui";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
+import "@fontsource/montserrat/200.css";
 import "@fontsource/montserrat/800.css";
 import "@fontsource/montserrat/900.css";
 import "./theme.css";
@@ -23,7 +25,9 @@ createRoot(rootEl).render(
   <StrictMode>
     <QueryClientProvider client={spaceQueryClient}>
       <div className="hatch-space-root" data-hatch-space-root>
-        <App />
+        <TypicalGround>
+          <App />
+        </TypicalGround>
       </div>
     </QueryClientProvider>
   </StrictMode>,

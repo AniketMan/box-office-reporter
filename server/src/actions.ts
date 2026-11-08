@@ -145,7 +145,8 @@ function cleanFilms(rows: readonly RawFilm[]) {
     valid:
       Number.isFinite(row.budget) &&
       Number.isFinite(row.domestic) &&
-      Number.isFinite(row.worldwide),
+      Number.isFinite(row.worldwide) &&
+      row.worldwide >= row.domestic,
   }));
 }
 
@@ -247,10 +248,11 @@ export const Actions = {
     response: z.object({
       years: z.array(z.object({
         year: z.number(),
-        films: z.number(),
-        domestic: z.number(),
+        films: z.number().nullable(),
+        domestic: z.number().nullable(),
         top10: z.number(),
         source_url: z.string().nullable(),
+        as_of: z.string().nullable(),
         tiers_estimated: z.boolean(),
         tiers: z.array(z.object({ name: z.string(), revenue: z.number(), films: z.number() })),
         top_films: z.array(z.object({ rank: z.number(), title: z.string(), gross: z.number() })),
@@ -302,10 +304,11 @@ export const Actions = {
 
       const years: Array<{
         year: number;
-        films: number;
-        domestic: number;
+        films: number | null;
+        domestic: number | null;
         top10: number;
         source_url: string | null;
+        as_of: string | null;
         tiers_estimated: boolean;
         tiers: Array<{ name: string; revenue: number; films: number }>;
         top_films: Array<{ rank: number; title: string; gross: number }>;
@@ -318,6 +321,7 @@ export const Actions = {
             domestic: 8_715_978_892,
             top10: 3_282_660_879,
             source_url: source2025,
+            as_of: null,
             tiers_estimated: true,
             tiers: estimatedTiers2025,
             top_films: [],
@@ -332,6 +336,7 @@ export const Actions = {
           domestic: is2024 ? 8_604_990_784 : row.domestic,
           top10: is2024 ? 3_722_658_754 : row.top10,
           source_url: is2024 ? source2024 : null,
+          as_of: null,
           tiers_estimated: false,
           tiers: is2024 ? sourceTiers2024 : [
             { name: ">$200M", revenue: row.tier2, films: row.n_t2 },
@@ -344,50 +349,33 @@ export const Actions = {
           top_films: is2024 ? topFilms2024 : [],
         });
       }
-      return { years };
-    },
-  }),
-
-  listAllFilms: defineAction({
-    request: z.object({}),
-    response: z.object({
-      films: z.array(z.object({
-        id: z.string(), catalog_id: z.string(), catalog_title: z.string(), title: z.string(), release: z.string().nullable(),
-        budget: z.number(), domestic: z.number(), worldwide: z.number(), source_url: z.string().nullable(),
-        rt_critics: z.number().nullable(), rt_audience: z.number().nullable(), cinemascore: z.string().nullable(), as_of: z.string().nullable(),
-      })),
-    }),
-    async handler(ctx) {
-      const seeded = catalogMeta.flatMap((definition) => {
-        const source = baseCatalogs[definition.name] ?? addedCatalogs[definition.name] ?? [];
-        return cleanFilms(source).map((film, index) => ({
-        id: `${definition.id}:${index}`,
-        catalog_id: definition.id,
-        catalog_title: definition.name,
-        title: film.title,
-        release: film.release ?? null,
-        budget: film.budget,
-        domestic: film.domestic,
-        worldwide: film.worldwide,
-        source_url: film.source_url ?? null,
-        rt_critics: film.rt_critics ?? null,
-        rt_audience: film.rt_audience ?? null,
-        cinemascore: film.cinemascore ?? null,
-        as_of: null,
-      }));
+      // 2026 is still running. The redesigned The Numbers year page lists the
+      // top-grossing films but no longer publishes a yearly total or film count,
+      // so those stay null rather than being estimated.
+      const topFilms2026 = [
+        { rank: 1, title: "Spider-Man: Brand New Day", gross: 958_944_095 },
+        { rank: 2, title: "The Odyssey", gross: 625_595_435 },
+        { rank: 3, title: "Toy Story 5", gross: 480_294_461 },
+        { rank: 4, title: "The Super Mario Galaxy Movie", gross: 429_814_610 },
+        { rank: 5, title: "Michael", gross: 372_303_388 },
+        { rank: 6, title: "Project Hail Mary", gross: 344_050_007 },
+        { rank: 7, title: "Obsession", gross: 263_451_715 },
+        { rank: 8, title: "The Devil Wears Prada 2", gross: 220_556_651 },
+        { rank: 9, title: "Backrooms", gross: 197_523_512 },
+        { rank: 10, title: "Minions & Monsters", gross: 183_171_260 },
+      ];
+      years.push({
+        year: 2026,
+        films: null,
+        domestic: null,
+        top10: topFilms2026.reduce((sum, film) => sum + film.gross, 0),
+        source_url: "https://www.the-numbers.com/market/2026/top-grossing-movies",
+        as_of: "2026-11-07",
+        tiers_estimated: false,
+        tiers: [],
+        top_films: topFilms2026,
       });
-      const singles = cleanFilms(singleFilms).map((film, index) => ({
-        id: `single:${index}`, catalog_id: "single", catalog_title: "Single-film sheet", title: film.title, release: null,
-        budget: film.budget, domestic: film.domestic, worldwide: film.worldwide, source_url: film.source_url,
-        rt_critics: null, rt_audience: null, cinemascore: null, as_of: null,
-      }));
-      const cached = await ctx.db<typeof schema>().select().from(schema.filmLookupCache);
-      const cachedFilms = cached.map((row) => ({
-        id: `cached:${row.id}`, catalog_id: "cached", catalog_title: "Single-film searches", title: row.title, release: row.release,
-        budget: row.budget, domestic: row.domestic, worldwide: row.worldwide, source_url: row.sourceUrl,
-        rt_critics: null, rt_audience: null, cinemascore: null, as_of: row.retrievedAt.toISOString(),
-      }));
-      return { films: [...seeded, ...singles, ...cachedFilms] };
+      return { years };
     },
   }),
 
@@ -402,36 +390,6 @@ export const Actions = {
       const singles = singleFilms.map((film, index) => ({ id: `single:${index}`, catalog_id: "single", catalog_title: "Single-film sheet", title: film.title, release: null, budget: film.budget, domestic: film.domestic, worldwide: film.worldwide, rt_critics: null, rt_audience: null, cinemascore: null }));
       const cached = await ctx.db<typeof schema>().select().from(schema.filmLookupCache);
       return { options: [...seeded, ...singles, ...cached.map((row) => ({ id: `cached:${row.id}`, catalog_id: "cached", catalog_title: "Single-film searches", title: row.title, release: row.release, budget: row.budget, domestic: row.domestic, worldwide: row.worldwide, rt_critics: null, rt_audience: null, cinemascore: null }))] };
-    },
-  }),
-
-  getFilmDetail: defineAction({
-    request: z.object({ id: z.string() }),
-    response: z.object({ film: z.object({
-      id: z.string(), catalog_id: z.string(), catalog_title: z.string(), title: z.string(), release: z.string().nullable(), budget: z.number(), domestic: z.number(), worldwide: z.number(), source_url: z.string().nullable(), rt_critics: z.number().nullable(), rt_audience: z.number().nullable(), cinemascore: z.string().nullable(), as_of: z.string().nullable(), valid: z.boolean(),
-    }).nullable() }),
-    async handler(ctx, args) {
-      if (args.id.startsWith("cached:")) {
-        const id = Number(args.id.slice(7));
-        const rows = await ctx.db<typeof schema>().select().from(schema.filmLookupCache);
-        const row = rows.find((candidate) => candidate.id === id);
-        if (!row) return { film: null };
-        return { film: { id: args.id, catalog_id: "cached", catalog_title: "Single-film searches", title: row.title, release: row.release, budget: row.budget, domestic: row.domestic, worldwide: row.worldwide, source_url: row.sourceUrl, rt_critics: null, rt_audience: null, cinemascore: null, as_of: row.retrievedAt.toISOString(), valid: Number.isFinite(row.budget) && Number.isFinite(row.domestic) && Number.isFinite(row.worldwide) } };
-      }
-      const [catalogId, indexText] = args.id.split(":");
-      const index = Number(indexText);
-      if (catalogId === "single") {
-        const row = singleFilms[index];
-        if (!row) return { film: null };
-        const valid = Number.isFinite(row.budget) && Number.isFinite(row.domestic) && Number.isFinite(row.worldwide);
-        return { film: { id: args.id, catalog_id: "single", catalog_title: "Single-film sheet", title: row.title, release: null, budget: row.budget, domestic: row.domestic, worldwide: row.worldwide, source_url: sourceUrl(row), rt_critics: null, rt_audience: null, cinemascore: null, as_of: null, valid } };
-      }
-      const definition = catalogMeta.find((item) => item.id === catalogId);
-      const source = definition ? (baseCatalogs[definition.name] ?? addedCatalogs[definition.name] ?? []) : [];
-      const row = source[index];
-      if (!definition || !row) return { film: null };
-      const valid = Number.isFinite(row.budget) && Number.isFinite(row.domestic) && Number.isFinite(row.worldwide);
-      return { film: { id: args.id, catalog_id: definition.id, catalog_title: definition.name, title: row.title, release: row.release ?? null, budget: row.budget, domestic: row.domestic, worldwide: row.worldwide, source_url: sourceUrl(row), rt_critics: row.rt_critics ?? null, rt_audience: row.rt_audience ?? null, cinemascore: row.cinemascore ?? null, as_of: null, valid } };
     },
   }),
 

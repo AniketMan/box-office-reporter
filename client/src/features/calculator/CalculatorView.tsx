@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { SecondaryButton, TextInput } from "@typglow/sdk/ui";
 import { api, type ApiResponse } from "../../api";
 import { calculateFilm, money, type Split } from "../../lib";
 import { ProgressionChart } from "../../components/ProgressionChart";
@@ -28,7 +29,7 @@ export function CalculatorView({ split }: Props) {
     { name: "Budget", value: selected.budget, color: "var(--chart-muted)" },
     { name: "Domestic", value: selected.domestic, color: "var(--chart-secondary)" },
     { name: "International", value: result.international, color: "var(--chart-tertiary)" },
-    { name: "Studio revenue", value: result.studioRevenue, color: "var(--accent)" },
+    { name: "Studio revenue", value: result.studioRevenue, color: "var(--app-accent)" },
     { name: "Studio profit", value: result.studioProfit, color: "var(--ink)" },
   ] : [];
 
@@ -38,17 +39,17 @@ export function CalculatorView({ split }: Props) {
         <span className="section-label">Single film</span>
         <h1>Follow the money from box office to studio.</h1>
         <form onSubmit={(event) => { event.preventDefault(); submit(false); }} className="search-form">
-          <label htmlFor="film-search">Film title</label>
           <div className="search-input-row">
-            <input id="film-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try Oppenheimer" autoComplete="off" />
-            <button type="submit" disabled={search.isPending || query.trim().length < 2}>{search.isPending ? "Searching…" : "Search"}</button>
+            <TextInput label="Film title" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try Oppenheimer" autoComplete="off" />
+            {/* The one action on this page, so it is the orange key. */}
+            <SecondaryButton color="orange" disabled={search.isPending || query.trim().length < 2} onClick={() => submit(false)}>{search.isPending ? "Searching…" : "Search"}</SecondaryButton>
           </div>
         </form>
         <p className="source-note">Searches The Numbers and returns only records with an explicit budget, domestic gross, and worldwide gross.</p>
       </header>
 
       {search.data?.status === "empty" || search.data?.status === "error" ? (
-        <div className="empty-result"><h2>No complete match</h2><p>{search.data.message}</p><button onClick={() => submit(true)}>Try again</button></div>
+        <div className="empty-result"><h2>No complete match</h2><p>{search.data.message}</p><SecondaryButton color="graphite" size="sm" onClick={() => submit(true)}>Try again</SecondaryButton></div>
       ) : null}
 
       {matches.length > 1 && (
@@ -83,13 +84,13 @@ export function CalculatorView({ split }: Props) {
                 <CartesianGrid stroke="var(--chart-grid)" horizontal={false} />
                 <XAxis type="number" domain={["auto", "auto"]} tickFormatter={(value) => money(Number(value))} tick={{ fill: "var(--chart-muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="name" width={100} tick={{ fill: "var(--text)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <Tooltip formatter={(value: number) => money(value, false)} contentStyle={{ background: "var(--card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
+                <Tooltip formatter={(value: number) => money(value, false)} contentStyle={{ background: "var(--app-card)", border: "1px solid var(--hairline)", borderRadius: 8, color: "var(--text)" }} />
                 <Bar dataKey="value" radius={[0, 3, 3, 0]}>{chartData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}</Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
           <ProgressionChart filmId={selected.id} sourceUrl={selected.source_url} title={selected.title} domestic={selected.domestic} />
-          <button className="refresh-button" onClick={() => submit(true)} disabled={search.isPending}>Refresh this title</button>
+          <div className="refresh-button"><SecondaryButton color="graphite" size="sm" onClick={() => submit(true)} disabled={search.isPending}>Refresh this title</SecondaryButton></div>
         </div>
       )}
     </section>
