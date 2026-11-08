@@ -2,13 +2,8 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "lib": ["ES2022"],
-    "types": ["bun-types"],
-    "outDir": "./dist",
-    "rootDir": ".",
-    "tsBuildInfoFile": "./.tsbuildinfo.server",
-    "paths": {
-      "@space/privileged": ["./.generated/privileged.contract"]
-    }
+    "types": ["node"],
+    "rootDir": "."
   },
-  "include": ["src/**/*", ".generated/**/*"]
+  "include": ["src/**/*"]
 }

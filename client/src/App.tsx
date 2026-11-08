@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { SafeAreaTopScrim } from "@hatch/space-sdk/client";
 import { ConnectionNotice, Select, TypicalAppHeader, useBarFit } from "@typglow/sdk/ui";
 import { api } from "./api";
 import { CalculatorView } from "./features/calculator/CalculatorView";
@@ -88,7 +87,8 @@ export function App() {
 
   return (
     <div className="app-frame">
-      <SafeAreaTopScrim backgroundColor="#000000" />
+      {/* Covers the status-bar inset on notched phones. */}
+      <div aria-hidden style={{ position: "fixed", inset: "0 0 auto 0", height: "env(safe-area-inset-top)", background: "#000000", zIndex: 50 }} />
       <div className="app-header-shell" ref={shellRef}>
         <TypicalAppHeader
           ref={headerRef}

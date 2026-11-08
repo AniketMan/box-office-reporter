@@ -1,6 +1,6 @@
-import { defineAction, z, type ActionsModule } from "@hatch/space-sdk";
-import { desc } from "drizzle-orm";
-import * as schema from "./schema";
+import { defineAction, z, type ActionsModule } from "./runtime";
+import { listLookups, upsertLookup, type LookupRow } from "./lookupCache";
+import { fetchMovieRecord, fetchPage, searchMovieUrls } from "./theNumbers";
 import { addedData, seedData } from "./data/catalogs";
 import theNumbersUrls from "./data/the-numbers-urls.json";
 
@@ -150,7 +150,7 @@ function cleanFilms(rows: readonly RawFilm[]) {
   }));
 }
 
-function toSearchMatch(row: typeof schema.filmLookupCache.$inferSelect, fromCache: boolean) {
+function toSearchMatch(row: LookupRow, fromCache: boolean) {
   return {
     id: `cached:${row.id}`,
     title: row.title,
@@ -159,7 +159,7 @@ function toSearchMatch(row: typeof schema.filmLookupCache.$inferSelect, fromCach
     domestic: row.domestic,
     worldwide: row.worldwide,
     source_url: row.sourceUrl,
-    as_of: row.retrievedAt.toISOString(),
+    as_of: new Date(row.retrievedAt).toISOString(),
     from_cache: fromCache,
   };
 }
@@ -387,13 +387,13 @@ export const Actions = {
   listFilmOptions: defineAction({
     request: z.object({}),
     response: z.object({ options: z.array(z.object({ id: z.string(), catalog_id: z.string(), catalog_title: z.string(), title: z.string(), release: z.string().nullable(), budget: z.number(), domestic: z.number(), worldwide: z.number(), rt_critics: z.number().nullable(), rt_audience: z.number().nullable(), cinemascore: z.string().nullable() })) }),
-    async handler(ctx) {
+    async handler() {
       const seeded = catalogMeta.flatMap((definition) => {
         const source = baseCatalogs[definition.name] ?? addedCatalogs[definition.name] ?? [];
         return source.map((film, index) => ({ id: `${definition.id}:${index}`, catalog_id: definition.id, catalog_title: definition.name, title: film.title, release: film.release ?? null, budget: film.budget, domestic: film.domestic, worldwide: film.worldwide, rt_critics: film.rt_critics ?? null, rt_audience: film.rt_audience ?? null, cinemascore: film.cinemascore ?? null }));
       });
       const singles = singleFilms.map((film, index) => ({ id: `single:${index}`, catalog_id: "single", catalog_title: "Single-film sheet", title: film.title, release: null, budget: film.budget, domestic: film.domestic, worldwide: film.worldwide, rt_critics: null, rt_audience: null, cinemascore: null }));
-      const cached = await ctx.db<typeof schema>().select().from(schema.filmLookupCache);
+      const cached = await listLookups();
       return { options: [...seeded, ...singles, ...cached.map((row) => ({ id: `cached:${row.id}`, catalog_id: "cached", catalog_title: "Single-film searches", title: row.title, release: row.release, budget: row.budget, domestic: row.domestic, worldwide: row.worldwide, rt_critics: null, rt_audience: null, cinemascore: null }))] };
     },
   }),
@@ -405,13 +405,13 @@ export const Actions = {
       weeks: z.array(z.object({ week: z.number(), date: z.string(), gross: z.number(), cumulative: z.number() })),
       checked_at: z.string(),
     }),
-    async handler(ctx, args) {
+    async handler(_ctx, args) {
       const unavailable = () => ({ status: "unavailable" as const, weeks: [], checked_at: new Date().toISOString() });
       let suppliedUrl: string | null = null;
       let filmTitle: string | null = null;
       if (args.film_id.startsWith("cached:")) {
         const id = Number(args.film_id.slice(7));
-        const rows = await ctx.db<typeof schema>().select().from(schema.filmLookupCache);
+        const rows = await listLookups();
         const row = rows.find((candidate) => candidate.id === id);
         suppliedUrl = row?.sourceUrl ?? null;
         filmTitle = row?.title ?? null;
@@ -436,17 +436,11 @@ export const Actions = {
         } catch {
           // Spreadsheet rows provide titles but not canonical links. Resolve a
           // real movie URL through search instead of constructing a slug.
-          const search = await ctx.tool.web_search(`site:the-numbers.com/movie "${filmTitle}" The Numbers`);
-          const candidate = search.content.results.find((result) => {
-            if (!result.url) return false;
-            try { validatedNumbersMovieUrl(result.url); return true; } catch { return false; }
-          });
-          movieUrl = candidate?.url ? validatedNumbersMovieUrl(candidate.url) : null;
+          const [found] = await searchMovieUrls(filmTitle, 1);
+          movieUrl = found ?? null;
         }
         if (!movieUrl) return unavailable();
-        const response = await fetch(movieUrl, { headers: { "User-Agent": "Mozilla/5.0 Film Calculator" }, signal: AbortSignal.timeout(15000) });
-        if (!response.ok) return unavailable();
-        const weeks = parseWeeklyProgression(await response.text());
+        const weeks = parseWeeklyProgression(await fetchPage(movieUrl));
         return { status: weeks.length ? "available" as const : "unavailable" as const, weeks, checked_at: new Date().toISOString() };
       } catch {
         return unavailable();
@@ -461,70 +455,39 @@ export const Actions = {
       matches: z.array(searchMatchSchema),
       message: z.string().nullable(),
     }),
-    async handler(ctx, args) {
-      const db = ctx.db<typeof schema>();
+    async handler(_ctx, args) {
       const normalized = normalizeTitle(args.query);
       const freshAfter = Date.now() - 24 * 60 * 60 * 1000;
       if (!args.refresh) {
-        const cached = await db.select().from(schema.filmLookupCache).orderBy(desc(schema.filmLookupCache.retrievedAt)).limit(100);
-        const matches = cached.filter((row) => row.retrievedAt.getTime() >= freshAfter && (row.normalizedTitle.includes(normalized) || normalized.includes(row.normalizedTitle))).slice(0, 5);
+        const cached = (await listLookups()).sort((a, b) => b.retrievedAt - a.retrievedAt);
+        const matches = cached.filter((row) => row.retrievedAt >= freshAfter && (row.normalizedTitle.includes(normalized) || normalized.includes(row.normalizedTitle))).slice(0, 5);
         if (matches.length > 0) return { status: "ok" as const, matches: matches.map((row) => toSearchMatch(row, true)), message: null };
       }
 
       try {
-        // This is the managed equivalent of the user-authorized
-        // /search?searchterm=TITLE lookup. Two tightly scoped queries improve
-        // the chance that the search result exposes all required figures while
-        // keeping The Numbers as the only accepted source.
-        const [primary, financials] = await Promise.all([
-          ctx.tool.web_search(`site:the-numbers.com/movie "${args.query}" The Numbers`),
-          ctx.tool.web_search(`site:the-numbers.com/movie "${args.query}" "Production Budget" "Domestic Box Office" "Worldwide Box Office"`),
-        ]);
-        const candidates = [...primary.content.results, ...financials.content.results]
-          .filter((result) => {
-            if (!result.url || !result.snippet) return false;
-            try { validatedNumbersMovieUrl(result.url); return true; } catch { return false; }
-          })
-          .filter((result, index, all) => all.findIndex((candidate) => candidate.url === result.url) === index)
-          .slice(0, 10);
-        if (candidates.length === 0) return { status: "empty" as const, matches: [], message: "No complete The Numbers result was found for that title." };
+        // The Numbers is the only accepted source: search its site, then read
+        // each movie page's summary table. Rows missing any figure are dropped.
+        const urls = await searchMovieUrls(args.query);
+        if (urls.length === 0) return { status: "empty" as const, matches: [], message: "No complete The Numbers result was found for that title." };
 
-        const extracted = await ctx.inference.complete(
-          `Extract film records only when title, production budget, domestic box office, and worldwide box office are explicitly present in these The Numbers results. Never infer, combine different films, or fill missing values. Prefer the canonical www.the-numbers.com result when duplicates exist.\n${JSON.stringify(candidates)}`,
-          {
-            schema: z.object({
-              matches: z.array(z.object({
-                title: z.string(),
-                url: z.string(),
-                release: z.string().nullable(),
-                budget: z.number().nullable(),
-                domestic: z.number().nullable(),
-                worldwide: z.number().nullable(),
-              })).max(5),
-            }),
-          },
-        );
-
-        const validUrls = new Set(candidates.map((candidate) => candidate.url).filter((url): url is string => url != null));
-        const now = new Date();
-        const complete = extracted.matches.filter((match) => validUrls.has(match.url) && match.budget != null && match.domestic != null && match.worldwide != null && match.worldwide >= match.domestic);
-        for (const match of complete) {
-          const values = {
-            normalizedTitle: normalizeTitle(match.title),
-            title: match.title.replace(/\s+-\s+Box Office.*$/i, ""),
-            release: match.release,
-            budget: match.budget ?? 0,
-            domestic: match.domestic ?? 0,
-            worldwide: match.worldwide ?? 0,
-            sourceUrl: match.url,
+        const records = await Promise.all(urls.map((url) => fetchMovieRecord(url).catch(() => null)));
+        const now = Date.now();
+        const saved: LookupRow[] = [];
+        for (const record of records) {
+          if (!record || record.budget == null || record.domestic == null || record.worldwide == null || record.worldwide < record.domestic) continue;
+          saved.push(await upsertLookup({
+            normalizedTitle: normalizeTitle(record.title),
+            title: record.title,
+            release: record.release,
+            budget: record.budget,
+            domestic: record.domestic,
+            worldwide: record.worldwide,
+            sourceUrl: record.url,
             retrievedAt: now,
-          };
-          await db.insert(schema.filmLookupCache).values(values).onConflictDoUpdate({ target: schema.filmLookupCache.sourceUrl, set: values });
+          }));
         }
-        if (complete.length === 0) return { status: "empty" as const, matches: [], message: "The Numbers results did not include a complete budget and box-office record." };
-        const saved = await db.select().from(schema.filmLookupCache).orderBy(desc(schema.filmLookupCache.retrievedAt)).limit(20);
-        const sourceUrls = new Set(complete.map((match) => match.url));
-        return { status: "ok" as const, matches: saved.filter((row) => sourceUrls.has(row.sourceUrl)).map((row) => toSearchMatch(row, false)), message: null };
+        if (saved.length === 0) return { status: "empty" as const, matches: [], message: "The Numbers results did not include a complete budget and box-office record." };
+        return { status: "ok" as const, matches: saved.map((row) => toSearchMatch(row, false)), message: null };
       } catch {
         return { status: "error" as const, matches: [], message: "The Numbers lookup is temporarily unavailable. Try again in a moment." };
       }
